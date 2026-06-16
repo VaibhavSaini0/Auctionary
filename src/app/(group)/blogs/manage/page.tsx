@@ -1,28 +1,25 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useState, useCallback } from "react";
 import { supabase } from "@/lib/supabase/client";
-import { useUser } from "@clerk/nextjs";
+import { useUser, useAuth } from "@clerk/nextjs";
 import { Edit, Trash2, Eye, EyeOff, Loader2, Plus, ChevronLeft } from "lucide-react";
 import Link from "next/link";
 import Image from "next/image";
-import EditBlogModal from "@/FunComponents/Modals/EditBlogModal"; 
+import EditBlogModal, { BlogItem } from "@/FunComponents/Modals/EditBlogModal"; 
 import { toast } from "sonner"; // Ensure sonner is installed
 
 export default function ManageBlogsPage() {
   const { user } = useUser();
-  const [blogs, setBlogs] = useState<any[]>([]);
+  const { getToken } = useAuth();
+  const [blogs, setBlogs] = useState<BlogItem[]>([]);
   const [loading, setLoading] = useState(true);
   const [actionId, setActionId] = useState<string | null>(null);
 
-  const [selectedBlog, setSelectedBlog] = useState<any>(null);
+  const [selectedBlog, setSelectedBlog] = useState<BlogItem | null>(null);
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
 
-  useEffect(() => {
-    if (user) fetchMyBlogs();
-  }, [user]);
-
-  async function fetchMyBlogs() {
+  const fetchMyBlogs = useCallback(async () => {
     setLoading(true);
     const { data } = await supabase
       .from("blogs")
@@ -30,9 +27,13 @@ export default function ManageBlogsPage() {
       .eq("author_id", user?.id)
       .order("created_at", { ascending: false });
     
-    setBlogs(data || []);
+    setBlogs((data as BlogItem[]) || []);
     setLoading(false);
-  }
+  }, [user]);
+
+  useEffect(() => {
+    if (user) fetchMyBlogs();
+  }, [user, fetchMyBlogs]);
 
   const handleDelete = async (id: string) => {
     if (!confirm("Are you sure you want to delete this post?")) return;
@@ -41,7 +42,7 @@ export default function ManageBlogsPage() {
     const toastId = toast.loading("Deleting post...");
 
     try {
-      const token = await (window as any).Clerk?.session?.getToken();
+      const token = await getToken({ template: "supabase" });
       
       const { error } = await supabase.functions.invoke("delete-blog", {
         body: { id },
@@ -52,8 +53,9 @@ export default function ManageBlogsPage() {
 
       setBlogs(blogs.filter(b => b.id !== id));
       toast.success("Post deleted successfully", { id: toastId });
-    } catch (err: any) {
-      toast.error(err.message || "Failed to delete post", { id: toastId });
+    } catch (err) {
+      const errMsg = err instanceof Error ? err.message : "Failed to delete post";
+      toast.error(errMsg, { id: toastId });
     } finally {
       setActionId(null);
     }
@@ -65,7 +67,7 @@ export default function ManageBlogsPage() {
     const toastId = toast.loading(`Moving to ${statusText}...`);
     
     try {
-      const token = await (window as any).Clerk?.session?.getToken();
+      const token = await getToken({ template: "supabase" });
       
       const { error } = await supabase.functions.invoke("update-blog", {
         body: { 
@@ -79,14 +81,15 @@ export default function ManageBlogsPage() {
 
       setBlogs(blogs.map(b => b.id === id ? { ...b, is_published: !currentStatus } : b));
       toast.success(`Post is now ${statusText}`, { id: toastId });
-    } catch (err: any) {
-      toast.error(err.message || "Failed to update visibility", { id: toastId });
+    } catch (err) {
+      const errMsg = err instanceof Error ? err.message : "Failed to update visibility";
+      toast.error(errMsg, { id: toastId });
     } finally {
       setActionId(null);
     }
   };
 
-  const handleEditClick = (blog: any) => {
+  const handleEditClick = (blog: BlogItem) => {
     setSelectedBlog(blog);
     setIsEditModalOpen(true);
   };
@@ -174,7 +177,7 @@ export default function ManageBlogsPage() {
         </table>
         {blogs.length === 0 && (
           <div className="py-20 text-center text-gray-400 font-bold uppercase tracking-widest text-xs">
-            You haven't written any stories yet.
+            You haven&apos;t written any stories yet.
           </div>
         )}
       </div>

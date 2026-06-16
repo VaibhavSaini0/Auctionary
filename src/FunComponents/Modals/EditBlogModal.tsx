@@ -5,15 +5,29 @@ import { supabase } from "@/lib/supabase/client";
 import { uploadToCloudinary } from "@/app/actions/cloudinary";
 import { Save, Loader2, UploadCloud, X } from "lucide-react";
 import { toast } from "sonner"; // Ensure sonner is installed
+import { useAuth } from "@clerk/nextjs";
+
+export interface BlogItem {
+  id: string;
+  title: string;
+  excerpt: string | null;
+  content: string;
+  category: string;
+  image_url: string;
+  is_published: boolean;
+  author_id: string;
+  created_at: string;
+}
 
 interface EditBlogModalProps {
-  blog: any;
+  blog: BlogItem | null;
   isOpen: boolean;
   onClose: () => void;
   onSuccess: () => void;
 }
 
 export default function EditBlogModal({ blog, isOpen, onClose, onSuccess }: EditBlogModalProps) {
+  const { getToken } = useAuth();
   const [loading, setLoading] = useState(false);
   const [categories, setCategories] = useState<{ id: number; name: string }[]>([]);
   const [imageFile, setImageFile] = useState<File | null>(null);
@@ -45,6 +59,7 @@ export default function EditBlogModal({ blog, isOpen, onClose, onSuccess }: Edit
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    if (!blog) return;
     setLoading(true);
 
     // Create a toast ID to update the same toast throughout the process
@@ -59,7 +74,7 @@ export default function EditBlogModal({ blog, isOpen, onClose, onSuccess }: Edit
         imageUrl = await uploadToCloudinary(form);
       }
 
-      const token = await (window as any).Clerk?.session?.getToken();
+      const token = await getToken({ template: "supabase" });
 
       const { error } = await supabase.functions.invoke("update-blog", {
         body: { 
@@ -79,9 +94,10 @@ export default function EditBlogModal({ blog, isOpen, onClose, onSuccess }: Edit
       
       onSuccess(); 
       onClose();   
-    } catch (err: any) {
+    } catch (err) {
       // Error Notification
-      toast.error(err.message || "Failed to update blog", { id: toastId });
+      const errMsg = err instanceof Error ? err.message : "Failed to update blog";
+      toast.error(errMsg, { id: toastId });
     } finally {
       setLoading(false);
     }

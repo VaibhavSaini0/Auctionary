@@ -2,12 +2,14 @@
 
 import { useState } from "react";
 import clsx from "clsx";
+import { motion } from "framer-motion";
+import { Hammer, Trophy, Package, Settings } from "lucide-react";
 
 const tabs = [
-  "Selling",
-  "Participating",
-  "Orders",
-  "Seller Settings",
+  { name: "Selling", icon: Hammer },
+  { name: "Participating", icon: Trophy },
+  { name: "Orders", icon: Package },
+  { name: "Seller Settings", icon: Settings },
 ];
 
 export default function ProfileTabs({
@@ -20,32 +22,42 @@ export default function ProfileTabs({
   return (
     <div>
       {/* Tabs */}
-      <div className="sticky top-0 z-20 bg-white border-b border-border ">
-        <div className="flex gap-3 sm:gap-6 px-1 sm:px-0 ">
-          {tabs.map((tab, i) => (
-            <button
-              key={tab}
-              onClick={() => setActive(i)}
-              className={clsx(
-                "relative py-3 px-1 text-sm font-semibold transition-colors",
-                active === i
-                  ? "text-primary"
-                  : "text-muted-foreground hover:text-foreground"
-              )}
-            >
-              {tab}
+      <div className="border-b border-border/80 pb-3 mb-8 overflow-x-auto scrollbar-hide">
+        <div className="flex gap-2 sm:gap-4 min-w-max">
+          {tabs.map((tab, i) => {
+            const Icon = tab.icon;
+            const isActive = active === i;
 
-              {/* Active underline */}
-              {active === i && (
-                <span className="absolute left-0 -bottom-[1px] h-[2px] w-full bg-primary rounded-full" />
-              )}
-            </button>
-          ))}
+            return (
+              <button
+                key={tab.name}
+                onClick={() => setActive(i)}
+                className={clsx(
+                  "relative py-2.5 px-4 sm:px-5 text-sm font-bold tracking-tight rounded-full transition-all duration-300 outline-none select-none cursor-pointer",
+                  isActive
+                    ? "text-primary-foreground"
+                    : "text-muted-foreground hover:text-foreground"
+                )}
+              >
+                {isActive && (
+                  <motion.span
+                    layoutId="activeProfileTab"
+                    className="absolute inset-0 bg-primary rounded-full shadow-md shadow-primary/25 z-0"
+                    transition={{ type: "spring", stiffness: 380, damping: 30 }}
+                  />
+                )}
+                <span className="relative z-10 flex items-center gap-2">
+                  <Icon size={16} className={isActive ? "text-primary-foreground" : "text-muted-foreground"} />
+                  <span>{tab.name}</span>
+                </span>
+              </button>
+            );
+          })}
         </div>
       </div>
 
       {/* Content */}
-      <div className="mt-8">{children[active]}</div>
+      <div className="mt-6 animate-in fade-in duration-300">{children[active]}</div>
     </div>
   );
 }

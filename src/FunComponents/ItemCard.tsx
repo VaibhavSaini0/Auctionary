@@ -18,7 +18,15 @@ type AuctionItem = {
 const FALLBACK_IMAGE =
   "https://media.istockphoto.com/id/1055079680/vector/black-linear-photo-camera-like-no-image-available.jpg?b=1&s=170x170&k=20&c=rUeK8H2EAp_sBFlbk7-m5STaJw18ldbBWsb2093N0-s=";
 
-function ItemCard({ item, i }: { item: AuctionItem; i: number }) {
+function ItemCard({
+  item,
+  i,
+  className = "w-full",
+}: {
+  item: AuctionItem;
+  i: number;
+  className?: string;
+}) {
   const router = useRouter();
   const [imgSrc, setImgSrc] = useState(item.image_url);
 
@@ -30,59 +38,79 @@ function ItemCard({ item, i }: { item: AuctionItem; i: number }) {
 
   return (
     <motion.div
-      initial={{ opacity: 0, x: 80 }}
-      whileInView={{ opacity: 1, x: 0 }}
+      initial={{ opacity: 0, y: 30 }}
+      whileInView={{ opacity: 1, y: 0 }}
       viewport={{ once: true }}
       transition={{
-        delay: i * 0.12,
+        delay: Math.min(i * 0.08, 0.4),
         type: "spring",
-        stiffness: 120,
+        stiffness: 100,
         damping: 18,
       }}
-      whileHover={{ y: -10 }}
-      className="min-w-84 max-w-84 bg-card rounded-2xl border border-border shadow-sm overflow-hidden group"
+      whileHover={{ y: -8 }}
+      className={`bg-card rounded-3xl border border-border shadow-sm overflow-hidden group hover:shadow-xl hover:border-primary/20 transition-all duration-300 flex flex-col justify-between ${className}`}
     >
-      <div className="relative overflow-hidden">
+      <div className="relative overflow-hidden h-64 sm:h-72">
         <Image
           src={imgSrc}
           alt={item.title}
           width={400}
           height={400}
           onError={() => setImgSrc(FALLBACK_IMAGE)}
-          className="w-full h-70 object-cover transition-transform duration-500 group-hover:scale-105"
+          className="w-full h-full object-cover transition-transform duration-700 ease-out group-hover:scale-110 cursor-pointer"
         />
 
+        {/* Live / Status Pill */}
         <div
-          className={`absolute top-2 left-2 flex items-center gap-1.5 px-3 py-1 rounded-full text-[11px] font-semibold border transition-all ${
+          className={`absolute top-4 left-4 flex items-center gap-1.5 px-3 py-1 rounded-full text-[10px] font-black uppercase tracking-widest border shadow-md transition-all ${
             item.status === "Live"
-              ? "bg-destructive text-white border-destructive"
-              : "bg-muted text-muted-foreground border-border"
+              ? "bg-destructive text-white border-destructive animate-pulse"
+              : "bg-background/90 text-muted-foreground border-border backdrop-blur-sm"
           }`}
         >
-{item.status=="Live"&&<span className="h-2 w-2 rounded-full bg-white" />
-}          {item.status === "Live"
+          {item.status === "Live" && <span className="h-1.5 w-1.5 rounded-full bg-white animate-ping" />}
+          {item.status === "Live"
             ? "LIVE"
             : item.status === "Ended"
             ? "ENDED"
             : item.status.toUpperCase()}
         </div>
+
+        {/* Dark Hover overlay */}
+        <div className="absolute inset-0 bg-gradient-to-t from-black/40 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none" />
       </div>
 
-      <div className="p-4">
-        <h3 className="text-lg font-semibold leading-snug mb-2 text-foreground cursor-pointer hover:underline">
-          {item.title}
-        </h3>
+      <div className="p-5 flex-1 flex flex-col justify-between">
+        <div>
+          <h3 
+            onClick={handleClick}
+            className="text-base sm:text-lg font-bold leading-snug mb-2 text-foreground cursor-pointer hover:text-primary transition-colors line-clamp-1"
+          >
+            {item.title}
+          </h3>
 
-        <p className="text-lg font-extrabold mb-3 text-foreground">
-          ₹{displayPrice.toLocaleString()}
-        </p>
+          <div className="flex justify-between items-end mb-4">
+            <div>
+              <p className="text-[10px] text-muted-foreground uppercase font-black tracking-wider mb-0.5">
+                Current Bid
+              </p>
+              <p className="text-xl font-black text-foreground">
+                ₹{displayPrice.toLocaleString()}
+              </p>
+            </div>
+            {item.status === "Live" && (
+              <span className="text-[10px] font-black text-emerald-600 bg-emerald-50 border border-emerald-100 px-2 py-1 rounded-md">
+                Active Bids
+              </span>
+            )}
+          </div>
+        </div>
 
         <Button
           onClick={handleClick}
-          disabled={item.status !== "Live"}
-          className="w-full rounded-full"
+          className="w-full rounded-2xl py-6 font-bold text-sm tracking-wider uppercase transition-all duration-300 group-hover:bg-primary group-hover:text-primary-foreground group-hover:shadow-lg group-hover:shadow-primary/20 group-active:scale-95 cursor-pointer"
         >
-          {item.status === "Live" ? "Bid Now" : "View"}
+          {item.status === "Live" ? "Bid Now" : "View Details"}
         </Button>
       </div>
     </motion.div>

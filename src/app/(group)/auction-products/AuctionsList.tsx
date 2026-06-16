@@ -3,7 +3,7 @@
 import { useEffect, useState } from "react";
 import { createClient } from "@supabase/supabase-js";
 import ItemCard from "@/FunComponents/ItemCard";
-import HorizontalItemCard from "@/FunComponents/HorizontalItemCard";
+import HorizontalItemCard, { AuctionItem } from "@/FunComponents/HorizontalItemCard";
 import {
   Pagination,
   PaginationContent,
@@ -29,7 +29,7 @@ export default function AuctionsList({
   search: string; // Fixed: Prop type
   isDetailed?: boolean;
 }) {
-  const [items, setItems] = useState<any[]>([]);
+  const [items, setItems] = useState<AuctionItem[]>([]);
   const [totalPages, setTotalPages] = useState(1);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(false);
@@ -84,7 +84,7 @@ export default function AuctionsList({
     <section>
       <div className={`grid gap-6 ${isDetailed ? "grid-cols-1" : "grid-cols-1 sm:grid-cols-2 lg:grid-cols-4"}`}>
         {items.length > 0 ? (
-          items.map((item: any, i: number) => (
+          items.map((item: AuctionItem, i: number) => (
             isDetailed ? 
               <HorizontalItemCard key={item.id} item={item} i={i} /> : 
               <ItemCard key={item.id} item={item} i={i} />
@@ -99,11 +99,11 @@ export default function AuctionsList({
       {totalPages > 1 && (
         <div className="mt-16 flex justify-center">
           <Pagination>
-            <PaginationContent className="bg-white rounded-xl px-4 py-2 shadow-sm border">
+            <PaginationContent className="bg-card rounded-2xl px-4 py-2 shadow-md border border-border">
               <PaginationItem>
                 <PaginationPrevious 
                    href={getPageUrl(Math.max(1, page - 1))}
-                   className={page === 1 ? "pointer-events-none opacity-40" : ""}
+                   className={`hover:bg-muted transition cursor-pointer rounded-xl ${page === 1 ? "pointer-events-none opacity-40" : ""}`}
                 />
               </PaginationItem>
               {Array.from({ length: totalPages }).map((_, i) => (
@@ -111,7 +111,11 @@ export default function AuctionsList({
                   <PaginationLink 
                     href={getPageUrl(i + 1)} 
                     isActive={page === i + 1}
-                    className={page === i + 1 ? "bg-orange-500 text-white" : ""}
+                    className={`rounded-xl cursor-pointer transition-all ${
+                      page === i + 1 
+                        ? "bg-primary text-white border-primary shadow-md shadow-primary/15 hover:bg-primary/90" 
+                        : "hover:bg-muted text-foreground"
+                    }`}
                   >
                     {i + 1}
                   </PaginationLink>
@@ -120,7 +124,7 @@ export default function AuctionsList({
               <PaginationItem>
                 <PaginationNext 
                    href={getPageUrl(Math.min(totalPages, page + 1))}
-                   className={page === totalPages ? "pointer-events-none opacity-40" : ""}
+                   className={`hover:bg-muted transition cursor-pointer rounded-xl ${page === totalPages ? "pointer-events-none opacity-40" : ""}`}
                 />
               </PaginationItem>
             </PaginationContent>
@@ -142,16 +146,20 @@ function AuctionsSkeleton({ isDetailed }: { isDetailed?: boolean }) {
       {Array.from({ length: 8 }).map((_, i) => (
         <div
           key={i}
-          className={`bg-white rounded-2xl border border-gray-100 shadow-sm overflow-hidden ${isDetailed ? "flex flex-col md:flex-row h-auto md:h-64" : ""}`}
+          className={`bg-card rounded-3xl border border-border shadow-sm overflow-hidden flex flex-col ${isDetailed ? "md:flex-row h-auto md:h-64" : "h-[420px] justify-between"}`}
         >
-          <div className={`relative bg-gray-100 animate-pulse ${isDetailed ? "w-full md:w-1/3 h-48 md:h-full" : "h-70"}`}>
-            <div className="absolute top-3 left-3 h-5 w-14 rounded-full bg-gray-200" />
+          <div className={`relative bg-muted animate-pulse ${isDetailed ? "w-full md:w-64 h-52 md:h-full" : "h-64 sm:h-72"}`}>
+            <div className="absolute top-4 left-4 h-5 w-14 rounded-full bg-border" />
           </div>
-          <div className={`p-4 space-y-3 flex-1 ${isDetailed ? "flex flex-col justify-center" : ""}`}>
-            <div className="h-4 w-full rounded bg-gray-200 animate-pulse" />
-            <div className="h-4 w-4/5 rounded bg-gray-200 animate-pulse" />
-            <div className="h-5 w-24 rounded bg-gray-200 animate-pulse" />
-            <div className="h-10 w-full rounded-full bg-gray-200 animate-pulse mt-2" />
+          <div className="p-5 space-y-4 flex-1 flex flex-col justify-between">
+            <div className="space-y-3">
+              <div className="h-5 w-3/4 rounded-md bg-muted animate-pulse" />
+              <div className="h-4 w-1/2 rounded-md bg-muted animate-pulse" />
+            </div>
+            <div className="space-y-2">
+              <div className="h-4 w-24 rounded-md bg-muted animate-pulse" />
+              <div className="h-10 w-full rounded-2xl bg-muted animate-pulse mt-2" />
+            </div>
           </div>
         </div>
       ))}

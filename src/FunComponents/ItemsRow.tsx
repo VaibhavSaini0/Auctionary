@@ -12,11 +12,8 @@ const AUTO_DELAY = 3500;
 
 export default function ItemsRow() {
   const [items, setItems] = useState<any[]>([]);
-  const [index, setIndex] = useState(0);
-  const [disableAnim, setDisableAnim] = useState(false);
-  const isResetting = useRef(false);
-
-  const maxIndex = Math.max(items.length - VISIBLE_CARDS, 0);
+  const containerRef = useRef<HTMLDivElement>(null);
+  const AUTO_DELAY = 4500;
 
   useEffect(() => {
     const fetchAuctions = async () => {
@@ -33,51 +30,41 @@ export default function ItemsRow() {
     fetchAuctions();
   }, []);
 
-  const next = () => {
-    if (isResetting.current || items.length === 0) return;
-    setIndex((prev) => prev + 1);
-  };
+  const scroll = (dir: "left" | "right") => {
+    if (!containerRef.current) return;
+    const cardElement = containerRef.current.querySelector(".item-card");
+    const cardWidth = cardElement ? cardElement.clientWidth : 320;
+    const gap = 24; // gap-6 is 24px
+    const scrollAmount = cardWidth + gap;
 
-  const prev = () => {
-    if (isResetting.current || items.length === 0) return;
-    setIndex((prev) => (prev === 0 ? maxIndex : prev - 1));
+    containerRef.current.scrollBy({
+      left: dir === "right" ? scrollAmount : -scrollAmount,
+      behavior: "smooth",
+    });
   };
 
   useEffect(() => {
     if (items.length === 0) return;
     const timer = setInterval(() => {
-      if (!isResetting.current) {
-        setIndex((prev) => prev + 1);
+      if (!containerRef.current) return;
+      const { scrollLeft, scrollWidth, clientWidth } = containerRef.current;
+      
+      // If we are at the end, scroll back to 0, else scroll right
+      if (scrollLeft + clientWidth >= scrollWidth - 20) {
+        containerRef.current.scrollTo({ left: 0, behavior: "smooth" });
+      } else {
+        scroll("right");
       }
     }, AUTO_DELAY);
 
     return () => clearInterval(timer);
   }, [items.length]);
 
-  useEffect(() => {
-    if (items.length === 0) return;
-    if (index > maxIndex) {
-      isResetting.current = true;
-
-      const timeout = setTimeout(() => {
-        setDisableAnim(true);
-        setIndex(0);
-
-        requestAnimationFrame(() => {
-          setDisableAnim(false);
-          isResetting.current = false;
-        });
-      }, 550);
-
-      return () => clearTimeout(timeout);
-    }
-  }, [index, maxIndex, items.length]);
-
   if (items.length === 0) return null;
 
   return (
-    <section className="relative py-10 my-14 bg-muted/40">
-      <div className="relative max-w-370 mx-auto px-6 overflow-hidden">
+    <section className="relative py-16 my-16 bg-muted/30">
+      <div className="relative max-w-[1400px] mx-auto px-6">
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
@@ -86,52 +73,42 @@ export default function ItemsRow() {
           className="flex items-center justify-between mb-10"
         >
           <div>
-            <span className="inline-block text-xs tracking-widest px-3 py-1 rounded-full bg-primary/10 text-primary font-semibold mb-2">
-              → BIDDING NOW
+            <span className="inline-block text-[10px] tracking-widest px-3 py-1.5 rounded-full bg-primary/10 text-primary font-black mb-3">
+              ✦ BIDDING NOW
             </span>
-            <h2 className="text-4xl font-bold text-foreground">
-              Live{" "}
-              <span className="text-muted-foreground font-light">
-                Auctions
-              </span>
+            <h2 className="text-3xl md:text-4xl font-black text-foreground tracking-tight">
+              Live <span className="text-orange-500 font-light font-serif italic">Auctions</span>
             </h2>
           </div>
 
           <div className="flex items-center gap-3">
             <button
-              onClick={prev}
-              className="w-10 h-10 rounded-full border border-border flex items-center justify-center hover:bg-muted transition"
+              onClick={() => scroll("left")}
+              className="w-11 h-11 rounded-full border border-border flex items-center justify-center bg-card hover:bg-primary hover:text-white hover:border-primary transition-all duration-300 shadow-sm hover:scale-105 active:scale-95 cursor-pointer"
+              aria-label="Previous slide"
             >
               <ChevronLeft size={18} />
             </button>
             <button
-              onClick={next}
-              className="w-10 h-10 rounded-full border border-border flex items-center justify-center hover:bg-muted transition"
+              onClick={() => scroll("right")}
+              className="w-11 h-11 rounded-full border border-border flex items-center justify-center bg-card hover:bg-primary hover:text-white hover:border-primary transition-all duration-300 shadow-sm hover:scale-105 active:scale-95 cursor-pointer"
+              aria-label="Next slide"
             >
               <ChevronRight size={18} />
             </button>
           </div>
         </motion.div>
 
-        <div className="overflow-hidden">
-          <motion.div
-            animate={{ x: -index * CARD_WIDTH }}
-            transition={
-              disableAnim
-                ? { duration: 0 }
-                : {
-                    type: "spring",
-                    stiffness: 90,
-                    damping: 18,
-                    mass: 0.6,
-                  }
-            }
-            className="flex gap-6"
-          >
-            {items.map((item, i) => (
-              <ItemCard key={`${item.id}-${i}`} item={item} i={i} />
-            ))}
-          </motion.div>
+        {/* Responsive, snap-scrolling list wrapper */}
+        <div
+          ref={containerRef}
+          className="flex gap-6 overflow-x-auto scroll-smooth snap-x snap-mandatory scrollbar-hide pb-6 overscroll-x-contain"
+        >
+          {items.map((item, i) => (
+            <div key={`${item.id}-${i}`} className="item-card snap-start flex-shrink-0">
+              <ItemCard item={item} i={i} className="w-[280px] sm:w-[320px] md:w-[340px]" />
+            </div>
+          ))}
         </div>
       </div>
     </section>

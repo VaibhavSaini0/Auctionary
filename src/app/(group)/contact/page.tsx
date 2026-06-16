@@ -81,7 +81,7 @@ export default function ContactPage() {
               </div>
               <h2 className="text-3xl font-black text-gray-900 mb-2">Message Sent!</h2>
               <p className="text-gray-500 max-w-sm mb-8">
-                We've sent a confirmation to your email. Our team will reach out to you shortly.
+                We&apos;ve sent a confirmation to your email. Our team will reach out to you shortly.
               </p>
               <button 
                 onClick={() => setSubmitted(false)}

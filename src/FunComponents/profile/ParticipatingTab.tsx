@@ -1,25 +1,11 @@
-import { currentUser } from "@clerk/nextjs/server";
-import { redirect } from "next/navigation";
 import BidsAccordionList from "./BidsAccordionList";
-import { supabase } from "@/lib/supabase/client";
 import { Suspense } from "react";
 
-async function ParticipatingTab() {
-  const user = await currentUser();
-  const { data: myBids, error } = await supabase
-    .from("bids")
-    .select("amount, created_at, auction_items(*)")
-    .eq("bidder_id", user?.id)
-    .order("created_at", { ascending: false });
+interface ParticipatingTabProps {
+  myBids: any[];
+}
 
-  if (error) {
-    return (
-      <p className="text-destructive">
-        Error loading your bidding activity.
-      </p>
-    );
-  }
-
+export default function ParticipatingTab({ myBids }: ParticipatingTabProps) {
   const groupedBids: Record<number, any> = {};
 
   myBids?.forEach((bid: any) => {
@@ -70,5 +56,3 @@ async function ParticipatingTab() {
     </div>
   );
 }
-
-export default ParticipatingTab;

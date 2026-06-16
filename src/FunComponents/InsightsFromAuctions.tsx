@@ -6,7 +6,7 @@ import { Button } from "@/components/ui/button";
 
 export default function InsightsFromAuctions() {
   return (
-    <section className="max-w-370 w-full mx-auto px-4 sm:px-6 py-16 sm:py-24 bg-background">
+    <section className="max-w-[1400px] w-full mx-auto px-4 sm:px-6 py-16 sm:py-24 bg-background">
       
       {/* HEADER */}
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-6 mb-12">
@@ -59,36 +59,51 @@ function ArticleCard({
   meta: string;
   title: string;
 }) {
+  const parts = meta.split(" · ");
+  const category = parts[0] || "Auction";
+  const date = parts[1] || "Today";
+
   return (
-    <article className="group relative overflow-hidden rounded-2xl border border-border bg-card transition-all duration-300 hover:shadow-xl hover:-translate-y-1">
+    <article className="group relative overflow-hidden rounded-3xl border border-border bg-card transition-all duration-500 hover:shadow-2xl hover:-translate-y-2 hover:border-primary/20 cursor-pointer flex flex-col h-full">
       
-      {/* IMAGE */}
-      <div className="relative h-56 sm:h-64 md:h-70 overflow-hidden">
+      {/* IMAGE CONTAINER WITH ZOOM */}
+      <div className="relative h-60 sm:h-72 overflow-hidden">
         <Image
           src={image}
           alt={title}
           fill
           sizes="(max-width: 768px) 100vw, 50vw"
-          className="object-cover transition-transform duration-700 group-hover:scale-110"
+          className="object-cover transition-transform duration-700 ease-out group-hover:scale-110"
         />
-        <div className="absolute inset-0 bg-linear-to-t from-black/20 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity" />
+        <div className="absolute inset-0 bg-gradient-to-t from-black/50 via-transparent to-transparent opacity-80 group-hover:opacity-90 transition-opacity" />
+        
+        {/* Category Badge over Image */}
+        <div className="absolute top-4 left-4 bg-primary/95 text-white text-[10px] font-black uppercase tracking-widest px-3 py-1.5 rounded-full shadow-md backdrop-blur-xs">
+          {category}
+        </div>
       </div>
 
-      {/* CONTENT */}
-      <div className="p-5 sm:p-7 space-y-4">
-        <p className="text-xs text-muted-foreground">{meta}</p>
+      {/* CARD CONTENT */}
+      <div className="p-6 sm:p-8 space-y-4 flex-1 flex flex-col justify-between">
+        <div className="space-y-3">
+          <p className="text-[10px] font-black uppercase tracking-wider text-muted-foreground">
+            ✦ Published {date} · 5 min read
+          </p>
 
-        <h3 className="text-lg sm:text-xl font-semibold leading-snug text-foreground transition-colors group-hover:text-primary">
-          {title}
-        </h3>
+          <h3 className="text-lg sm:text-xl font-bold leading-snug text-foreground transition-colors group-hover:text-primary line-clamp-2">
+            {title}
+          </h3>
+        </div>
 
-        <Button
-          variant="ghost"
-          className="group/btn px-0 gap-2 text-sm font-medium text-foreground hover:text-primary"
-        >
-          Read More
-          <ArrowUpRight className="w-4 h-4 transition-transform group-hover/btn:translate-x-1 group-hover/btn:-translate-y-1" />
-        </Button>
+        <div className="pt-4 border-t border-border mt-4">
+          <Button
+            variant="ghost"
+            className="group/btn px-0 gap-2 text-sm font-bold text-foreground hover:text-primary hover:bg-transparent flex items-center cursor-pointer"
+          >
+            Read Full Story
+            <ArrowUpRight className="w-4 h-4 transition-transform group-hover/btn:translate-x-1.5 group-hover/btn:-translate-y-1.5 text-orange-500" />
+          </Button>
+        </div>
       </div>
     </article>
   );

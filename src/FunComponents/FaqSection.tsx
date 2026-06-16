@@ -56,7 +56,7 @@ const faqs = [
 ];
 
 export default function FaqSection() {
-  const [openId, setOpenId] = useState<string | null>("01");
+  const [openId, setOpenId] = useState<string | null>(null);
 
   const toggle = (id: string) => {
     setOpenId(openId === id ? null : id);
@@ -64,7 +64,7 @@ export default function FaqSection() {
 
   return (
     <section className="relative bg-muted/40 py-24">
-      <div className="max-w-370 mx-auto px-6">
+      <div className="max-w-[1400px] mx-auto px-4 sm:px-6 lg:px-8">
         <div className="text-center mb-16">
           <span className="inline-block text-xs tracking-widest px-4 py-1 rounded-full border border-border bg-card text-muted-foreground font-semibold mb-4">
             → QUESTION NOW
@@ -77,31 +77,42 @@ export default function FaqSection() {
           </h2>
         </div>
 
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-x-16 gap-y-10">
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
           {faqs.map((faq) => {
             const isOpen = openId === faq.id;
 
             return (
-              <div
+              <motion.div
                 key={faq.id}
-                className="border-b border-border pb-6"
+                layout
+                className={`rounded-2xl border p-6 transition-all duration-300 shadow-sm cursor-pointer ${
+                  isOpen
+                    ? "bg-card border-primary shadow-md"
+                    : "bg-card hover:bg-muted/40 border-border hover:border-primary/20"
+                }`}
+                onClick={() => toggle(faq.id)}
               >
                 <button
-                  onClick={() => toggle(faq.id)}
-                  className="w-full flex items-center justify-between text-left"
+                  type="button"
+                  className="w-full flex items-center justify-between text-left cursor-pointer outline-none"
                 >
-                  <span className="font-semibold text-lg text-foreground">
+                  <span className={`font-bold text-base sm:text-lg transition-colors duration-300 ${
+                    isOpen ? "text-primary" : "text-foreground"
+                  }`}>
                     {faq.id}. {faq.question}
                   </span>
 
                   <motion.span
+                    className={`p-2 rounded-xl transition-all duration-300 ${
+                      isOpen ? "bg-primary text-white" : "bg-muted text-muted-foreground"
+                    }`}
                     animate={{ rotate: isOpen ? 180 : 0 }}
                     transition={{ duration: 0.3 }}
                   >
                     {isOpen ? (
-                      <Minus size={20} />
+                      <Minus size={16} />
                     ) : (
-                      <Plus size={20} />
+                      <Plus size={16} />
                     )}
                   </motion.span>
                 </button>
@@ -112,18 +123,18 @@ export default function FaqSection() {
                       animate={{ opacity: 1, height: "auto" }}
                       exit={{ opacity: 0, height: 0 }}
                       transition={{
-                        duration: 0.6,
+                        duration: 0.5,
                         ease: [0.22, 1, 0.36, 1],
                       }}
                       className="overflow-hidden"
                     >
-                      <p className="mt-4 text-sm text-muted-foreground leading-relaxed max-w-xl">
+                      <p className="mt-4 text-xs sm:text-sm text-muted-foreground leading-relaxed">
                         {faq.answer}
                       </p>
                     </motion.div>
                   )}
                 </AnimatePresence>
-              </div>
+              </motion.div>
             );
           })}
         </div>

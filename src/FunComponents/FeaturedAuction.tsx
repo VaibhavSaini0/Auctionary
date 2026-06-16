@@ -66,7 +66,7 @@ export default function FeaturedAuctionCarousel() {
   }, [api]);
 
   return (
-    <section className="max-w-370 mx-auto px-6 py-10">
+    <section className="max-w-[1400px] mx-auto px-4 sm:px-6 lg:px-8 py-10">
       <Carousel opts={{ loop: true }} setApi={setApi} className="relative">
         <CarouselContent>
           {slides.map((slide, index) => {

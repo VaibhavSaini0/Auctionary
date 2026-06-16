@@ -34,14 +34,23 @@ export default function AuctionGridContent() {
   ];
 
   return (
-    <section className="max-w-[1400px] mx-auto px-6 py-16 bg-white">
-      <div className="mb-10">
-        <h1 className="text-4xl font-black mb-2 text-gray-900">
-          Auctions
+    <section className="max-w-[1400px] mx-auto px-6 pt-8 pb-20 bg-background relative overflow-hidden">
+      {/* Background soft glow decoration */}
+      <div className="absolute top-0 right-0 w-80 h-80 rounded-full bg-primary/5 blur-[100px] pointer-events-none" />
+
+      <div className="mb-12">
+        <span className="inline-block text-[10px] tracking-widest px-3 py-1.5 rounded-full bg-primary/10 text-primary font-black mb-3">
+          ✦ LIVE EVENTS
+        </span>
+        <h1 className="text-3xl sm:text-4xl font-black text-gray-900 tracking-tight">
+          Browse <span className="text-orange-500 font-light font-serif italic">Auctions</span>
         </h1>
+        <p className="text-xs sm:text-sm text-muted-foreground mt-2 max-w-lg leading-relaxed">
+          Discover rare collectibles, vintage items, and bid in real-time. Join premium live bidding rooms instantly.
+        </p>
       </div>
 
-      <div className="flex flex-wrap justify-between items-center gap-4 mb-8">
+      <div className="flex flex-wrap justify-between items-center gap-4 mb-10 pb-6 border-b border-border">
         <div className="flex flex-wrap gap-2">
           {filters.map((f) => (
             <Link
@@ -49,10 +58,10 @@ export default function AuctionGridContent() {
               href={`/auction-products?status=${f.value}${
                 searchQuery ? `&search=${searchQuery}` : ""
               }`}
-              className={`px-3 py-1 rounded-full text-sm font-semibold border ${
+              className={`px-4 py-2 rounded-full text-[10px] font-black uppercase tracking-wider border transition-all duration-300 ${
                 currentStatus === f.value
-                  ? "bg-orange-500 text-white border-orange-500"
-                  : "bg-white text-gray-600 border-gray-200"
+                  ? "bg-primary text-white border-primary shadow-md shadow-primary/15"
+                  : "bg-card text-gray-600 border-border hover:border-primary/30 hover:bg-primary/5 hover:text-primary"
               }`}
             >
               {f.label}
@@ -63,9 +72,10 @@ export default function AuctionGridContent() {
         {!isMobile && (
           <button
             onClick={() => setIsDetailedCard(!isDetailedCard)}
-            className="p-2 rounded-full border border-orange-500 bg-orange-50 text-orange-600"
+            className="p-2.5 rounded-xl border border-border bg-card hover:bg-muted text-foreground transition-all duration-300 shadow-sm cursor-pointer hover:scale-105 active:scale-95 flex items-center justify-center"
+            title={isDetailedView ? "Switch to Grid View" : "Switch to Detailed List View"}
           >
-            {isDetailedView ? <Grid size={18} /> : <List size={18} />}
+            {isDetailedView ? <Grid size={18} className="text-primary" /> : <List size={18} className="text-primary" />}
           </button>
         )}
       </div>

@@ -37,7 +37,7 @@ export default function AddAuctionModal({ userId }: { userId: string }) {
       
       if (!error && data) {
         setCategories(data);
-        if (data.length > 0) setFormData(prev => ({ ...prev, category: data[0].id }));
+        if (data.length > 0) setFormData(prev => ({ ...prev, category_id: data[0].id }));
       }
     }
     fetchCategories();
@@ -70,6 +70,7 @@ export default function AddAuctionModal({ userId }: { userId: string }) {
 
       return await createAuctionAction({
         ...formData,
+        category: formData.category_id,
         starting_bid: Number(formData.starting_bid),
         current_bid: Number(formData.starting_bid),
         status,

@@ -71,11 +71,12 @@ export default function ProductDetailsPage() {
         (payload) => {
           const updatedItem = payload.new as AuctionItem;
           setAuction(updatedItem);
-          if (
-            updatedItem.current_bid &&
-            updatedItem.current_bid >= amount
-          ) {
-            setAmount(updatedItem.current_bid + 10);
+          if (updatedItem.current_bid) {
+            setAmount((prevAmount) => {
+              return updatedItem.current_bid! >= prevAmount
+                ? updatedItem.current_bid! + 10
+                : prevAmount;
+            });
           }
         }
       )
@@ -84,7 +85,7 @@ export default function ProductDetailsPage() {
     return () => {
       supabase.removeChannel(channel);
     };
-  }, [id, amount]);
+  }, [id]);
 
   if (loading)
     return (

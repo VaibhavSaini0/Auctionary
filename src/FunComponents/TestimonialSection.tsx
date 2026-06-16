@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import { motion, Variants, AnimatePresence } from "framer-motion";
-import { ChevronLeft, ChevronRight, MessageSquareQuote } from "lucide-react";
+import { ChevronLeft, ChevronRight, MessageSquareQuote, Star } from "lucide-react";
 import Image from "next/image";
 
 const testimonials = [
@@ -62,24 +62,23 @@ export default function TestimonialSection() {
   const testimonial = testimonials[index];
 
   return (
-    <section className="max-w-370 mx-auto px-6 py-24 bg-background">
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-20 items-center">
+    <section className="max-w-[1400px] mx-auto px-6 py-24 bg-background relative overflow-hidden">
+      <div className="absolute top-1/2 left-0 w-72 h-72 rounded-full bg-orange-400/5 blur-[100px] pointer-events-none" />
+
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
         <div>
-          <span className="inline-block text-xs tracking-widest px-4 py-1 rounded-full bg-primary/10 text-primary font-semibold mb-4">
-            → TESTIMONIAL
+          <span className="inline-block text-[10px] tracking-widest px-4 py-1.5 rounded-full bg-primary/10 text-primary font-black mb-4">
+            ✦ TESTIMONIALS
           </span>
 
           <div className="flex justify-between items-start">
-            <h2 className="text-4xl lg:text-5xl font-extrabold mb-10 text-foreground">
-              Praise from Our{" "}
-              <span className="text-muted-foreground font-light">
-                Client.
-              </span>
+            <h2 className="text-3xl sm:text-4xl lg:text-5xl font-black mb-10 text-foreground tracking-tight">
+              Praise from Our <span className="text-orange-500 font-light font-serif italic">Clients</span>
             </h2>
-            <MessageSquareQuote size={48} className="text-primary" />
+            <MessageSquareQuote size={48} className="text-primary/20 hover:text-primary transition-colors" />
           </div>
 
-          <div className="min-h-60 overflow-hidden">
+          <div className="min-h-[260px] p-8 rounded-3xl border border-border bg-card shadow-sm hover:shadow-md transition-all duration-300">
             <AnimatePresence custom={direction} mode="wait">
               <motion.div
                 key={testimonial.id}
@@ -89,15 +88,22 @@ export default function TestimonialSection() {
                 animate="center"
                 exit="exit"
               >
-                <p className="text-primary font-semibold mb-3">
-                  {testimonial.title}
+                {/* 5-Star Rating Widget */}
+                <div className="flex gap-1 mb-4">
+                  {[...Array(5)].map((_, i) => (
+                    <Star key={i} size={16} className="fill-orange-400 text-orange-400" />
+                  ))}
+                </div>
+
+                <p className="text-primary font-bold text-lg mb-3">
+                  &ldquo;{testimonial.title}&rdquo;
                 </p>
 
-                <p className="text-muted-foreground leading-relaxed mb-8 max-w-xl">
+                <p className="text-muted-foreground leading-relaxed text-sm sm:text-base mb-8 max-w-xl">
                   {testimonial.text}
                 </p>
 
-                <div className="flex items-center gap-4">
+                <div className="flex items-center gap-4 border-t border-border pt-6">
                   <Image
                     src={testimonial.avatar}
                     alt={testimonial.name}
@@ -106,10 +112,10 @@ export default function TestimonialSection() {
                     className="rounded-full border border-border"
                   />
                   <div>
-                    <p className="font-semibold text-foreground">
+                    <p className="font-bold text-foreground">
                       {testimonial.name}
                     </p>
-                    <p className="text-sm text-muted-foreground">
+                    <p className="text-xs text-muted-foreground font-semibold">
                       {testimonial.role}
                     </p>
                   </div>
@@ -121,20 +127,23 @@ export default function TestimonialSection() {
           <div className="flex gap-4 mt-6">
             <button
               onClick={() => paginate(-1)}
-              className="w-10 h-10 rounded-full border border-border flex items-center justify-center hover:bg-muted transition"
+              className="w-11 h-11 rounded-full border border-border flex items-center justify-center bg-card hover:bg-primary hover:text-white hover:border-primary transition-all duration-300 shadow-sm hover:scale-105 active:scale-95 cursor-pointer"
+              aria-label="Previous testimonial"
             >
-              <ChevronLeft size={22} />
+              <ChevronLeft size={20} />
             </button>
             <button
               onClick={() => paginate(1)}
-              className="w-10 h-10 rounded-full border border-border flex items-center justify-center hover:bg-muted transition"
+              className="w-11 h-11 rounded-full border border-border flex items-center justify-center bg-card hover:bg-primary hover:text-white hover:border-primary transition-all duration-300 shadow-sm hover:scale-105 active:scale-95 cursor-pointer"
+              aria-label="Next testimonial"
             >
-              <ChevronRight size={22} />
+              <ChevronRight size={20} />
             </button>
           </div>
         </div>
 
-        <div className="relative w-137.5 h-137.5  hidden lg:block ml-auto">
+        {/* Client overlapping avatar grid (Desktop & Tablet) */}
+        <div className="relative w-full max-w-[500px] h-[450px] hidden md:block lg:ml-auto">
           {[
             "https://images.unsplash.com/photo-1529626455594-4ff0802cfb7e",
             "https://images.unsplash.com/photo-1535713875002-d1d0cf377fde",
@@ -146,16 +155,16 @@ export default function TestimonialSection() {
               initial={{ opacity: 0, scale: 0.8 }}
               animate={{ opacity: 1, scale: 1 }}
               transition={{ delay: i * 0.15, duration: 0.5 }}
-              whileHover={{ scale: 1.15, zIndex: 50 }}
+              whileHover={{ scale: 1.1, zIndex: 40 }}
               className={`
-                absolute w-[288px] h-72 rounded-full overflow-hidden border border-background cursor-pointer
-                ${i === 0 && "top-0 left-0 z-20 translate-x-1.5 translate-y-1.5"}
-                ${i === 1 && "top-0 right-0 z-10 -translate-x-1.5 translate-y-1.5"}
-                ${i === 2 && "bottom-0 left-0 z-10 translate-x-1.5 -translate-y-1.5"}
-                ${i === 3 && "bottom-0 right-0 z-30 -translate-x-1.5 -translate-y-1.5"}
+                absolute w-[220px] h-[220px] rounded-full overflow-hidden border-4 border-background cursor-pointer shadow-xl transition-all duration-300
+                ${i === 0 && "top-0 left-0 z-20"}
+                ${i === 1 && "top-0 right-0 z-10"}
+                ${i === 2 && "bottom-0 left-0 z-10"}
+                ${i === 3 && "bottom-0 right-0 z-30"}
               `}
             >
-              <Image src={img} alt="Client" fill className="object-cover" />
+              <Image src={img} alt="Client" fill sizes="220px" className="object-cover" />
             </motion.div>
           ))}
         </div>

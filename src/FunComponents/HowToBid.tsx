@@ -32,58 +32,62 @@ const biddingSteps = [
 
 export default function HowToBid() {
   return (
-    <section className="py-14 bg-background overflow-hidden">
-      <div className="max-w-5xl mx-auto px-6">
+    <section className="py-24 bg-background relative overflow-hidden">
+      {/* Decorative background glows */}
+      <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[500px] h-[500px] rounded-full bg-primary/5 blur-[120px] pointer-events-none" />
+
+      <div className="max-w-[1400px] mx-auto px-6">
         {/* HEADER */}
-        <div className="text-center mb-20">
-          <span className="text-xs font-bold tracking-[0.2em] text-primary uppercase bg-primary/10 px-4 py-1.5 rounded-full">
+        <div className="text-center mb-16">
+          <span className="text-xs font-black tracking-[0.25em] text-primary uppercase bg-primary/10 px-4 py-2 rounded-full">
             Guide
           </span>
-          <h2 className="text-4xl md:text-5xl font-black mt-6 text-foreground">
-            How to <span className="text-muted-foreground font-light text-3xl md:text-4xl">Bid</span>
+          <h2 className="text-4xl md:text-5xl font-black mt-6 text-foreground tracking-tight">
+            How to <span className="text-orange-500 font-light font-serif italic">Bid</span>
           </h2>
+          <p className="text-sm text-muted-foreground mt-3 max-w-md mx-auto">
+            Get started in minutes with our transparent, step-by-step bidding process.
+          </p>
         </div>
 
-        <div className="relative">
-          <div className="absolute left-4 md:left-1/2 top-0 bottom-0 w-0.5 bg-border -translate-x-1/2 hidden sm:block" />
+        {/* 4-COLUMN CARD GRID */}
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
+          {biddingSteps.map((item, i) => (
+            <motion.div
+              key={i}
+              initial={{ opacity: 0, y: 30 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true, margin: "-50px" }}
+              transition={{ duration: 0.5, delay: i * 0.1 }}
+              whileHover={{ y: -8, scale: 1.01 }}
+              className="relative bg-card border border-border p-8 rounded-3xl shadow-sm hover:shadow-xl hover:border-orange-500/20 transition-all duration-300 group cursor-pointer overflow-hidden flex flex-col justify-between min-h-[260px]"
+            >
+              {/* Large low-opacity Step indicator */}
+              <div className="absolute -top-4 -right-2 text-8xl font-black text-foreground/[0.03] select-none group-hover:text-primary/[0.04] transition-colors duration-300">
+                {item.status.split(" ")[1]}
+              </div>
 
-          <div className="space-y-7 md:space-y-0">
-            {biddingSteps.map((item, i) => (
-              <div key={i} className="relative flex flex-col md:flex-row items-center justify-between md:mb-24 last:mb-0">
-                
-                <motion.div 
-                  initial={{ opacity: 0, x: i % 2 === 0 ? -50 : 50 }}
-                  whileInView={{ opacity: 1, x: 0 }}
-                  viewport={{ once: true }}
-                  transition={{ duration: 0.5, delay: 0.2 }}
-                  className={`w-full md:w-[42%] ${i % 2 === 0 ? "md:text-right" : "md:order-last md:text-left"}`}
-                >
-                  <span className="text-xs font-bold text-primary mb-2 block">{item.status}</span>
-                  <h3 className="text-xl font-bold text-foreground mb-3">{item.title}</h3>
-                  <p className="text-sm text-muted-foreground leading-relaxed">
-                    {item.desc}
-                  </p>
-                </motion.div>
-
-                {/* 2. Center Icon Node */}
-                <div className="absolute left-4 md:left-1/2 top-0 md:top-1/2 -translate-y-1/2 -translate-x-1/2 z-10 hidden sm:block">
-                  <div className="w-10 h-10 rounded-full bg-background border-4 border-primary flex items-center justify-center text-primary shadow-xl">
-                    {item.icon}
-                  </div>
+              <div>
+                {/* Icon Circle */}
+                <div className="w-12 h-12 rounded-2xl bg-primary/10 text-primary flex items-center justify-center mb-6 shadow-sm group-hover:bg-primary group-hover:text-white transition-all duration-500 group-hover:rotate-6">
+                  {item.icon}
                 </div>
 
-                {/* 3. Empty Space for layout balance (Desktop) */}
-                <div className="hidden md:block w-[42%]" />
+                {/* Content */}
+                <h3 className="text-xl font-bold text-foreground mb-3 group-hover:text-primary transition-colors">
+                  {item.title}
+                </h3>
+                <p className="text-sm text-muted-foreground leading-relaxed">
+                  {item.desc}
+                </p>
               </div>
-            ))}
 
-            {/* Final Completion Node */}
-            <div className="relative flex justify-center pt-8">
-               <div className="w-12 h-12 rounded-full bg-green-500 flex items-center justify-center text-white shadow-lg shadow-green-200 z-10">
-                  <CheckCircle2 size={24} />
-               </div>
-            </div>
-          </div>
+              {/* Progress pill indicator */}
+              <div className="mt-6 text-[10px] font-black uppercase text-orange-500 tracking-wider">
+                {item.status}
+              </div>
+            </motion.div>
+          ))}
         </div>
       </div>
     </section>

@@ -16,6 +16,7 @@ export default function ChatRoom({
   const [messages, setMessages] = useState<any[]>([]);
   const [input, setInput] = useState("");
   const scrollRef = useRef<HTMLDivElement>(null);
+  const profileCache = useRef<Record<string, any>>({});
   const { getToken } = useAuth();
 
   useEffect(() => {
@@ -50,11 +51,21 @@ export default function ChatRoom({
           filter: `auction_item_id=eq.${auctionId}`,
         },
         async (payload) => {
-          const { data: profile } = await supabase
-            .from("profiles")
-            .select("full_name, avatar_url")
-            .eq("id", payload.new.user_id)
-            .single();
+          const senderId = payload.new.user_id;
+          let profile = profileCache.current[senderId];
+
+          if (!profile) {
+            const { data } = await supabase
+              .from("profiles")
+              .select("full_name, avatar_url")
+              .eq("id", senderId)
+              .single();
+            
+            if (data) {
+              profile = data;
+              profileCache.current[senderId] = data;
+            }
+          }
 
           setMessages((prev) => [
             ...prev,

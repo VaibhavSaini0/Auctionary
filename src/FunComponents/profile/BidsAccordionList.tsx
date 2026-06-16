@@ -10,6 +10,7 @@ import {
 } from "lucide-react";
 import Link from "next/link";
 import { supabase } from "@/lib/supabase/client";
+import Image from "next/image";
 
 export default function BidsAccordionList({ auctions: initialAuctions }: any) {
   const [expandedId, setExpandedId] = useState<number | null>(null);
@@ -106,21 +107,26 @@ export default function BidsAccordionList({ auctions: initialAuctions }: any) {
           >
             <button
               onClick={() => toggle(auction.id)}
-              className="w-full flex items-center justify-between p-4 text-left hover:bg-muted/40 transition"
+              className="w-full flex items-center justify-between p-4 text-left hover:bg-muted/40 transition-colors duration-200"
             >
               <div className="flex items-center gap-4">
-                <div
-                  className={`h-10 w-10 rounded-lg flex items-center justify-center transition-colors duration-500 ${
-                    isLeading
-                      ? "bg-accent/20"
-                      : "bg-destructive/15"
-                  }`}
-                >
-                  {isLeading ? (
-                    <Trophy className="h-5 w-5 text-accent" />
-                  ) : (
-                    <AlertCircle className="h-5 w-5 text-destructive" />
-                  )}
+                <div className="relative w-12 h-12 rounded-xl bg-muted border border-border/60 shrink-0">
+                  {/* eslint-disable-next-line @next/next/no-img-element */}
+                  <img
+                    src={auction.image_url || "/placeholder.jpg"}
+                    alt={auction.title}
+                    className="object-cover w-full h-full rounded-xl"
+                  />
+                  {/* Floating status badge indicator */}
+                  <span className={`absolute -top-1.5 -right-1.5 w-5 h-5 rounded-full flex items-center justify-center border-2 border-card shadow-md ${
+                    isLeading ? "bg-emerald-500 text-white" : "bg-destructive text-white"
+                  }`}>
+                    {isLeading ? (
+                      <Trophy className="h-2.5 w-2.5" />
+                    ) : (
+                      <AlertCircle className="h-2.5 w-2.5" />
+                    )}
+                  </span>
                 </div>
 
                 <div>

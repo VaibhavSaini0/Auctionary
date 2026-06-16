@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { activateSellerAccount } from "@/app/actions/seller-onboarding";
+import { toast } from "sonner";
 
 export default function BecomeSeller() {
   const [open, setOpen] = useState(false);
@@ -13,13 +14,15 @@ export default function BecomeSeller() {
 
   async function handleCreateSeller() {
     setLoading(true);
+    const toastId = toast.loading("Activating your seller account...");
     try {
       await activateSellerAccount(storeName, storeBio);
+      toast.success("Seller account activated!", { id: toastId });
       setOpen(false);
       router.refresh();
       window.location.reload();
     } catch (err: any) {
-      alert(err.message);
+      toast.error(err.message || "Failed to activate account", { id: toastId });
     } finally {
       setLoading(false);
     }

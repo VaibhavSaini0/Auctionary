@@ -18,7 +18,7 @@ export default function FeaturedHighlights() {
     <section className="relative py-28 overflow-hidden">
       <div className="absolute inset-0 bg-muted/40" />
 
-      <div className="relative max-w-370 mx-auto px-6">
+      <div className="relative max-w-[1400px] mx-auto px-4 sm:px-6 lg:px-8">
         <motion.div
           initial={{ opacity: 0, y: 30 }}
           whileInView={{ opacity: 1, y: 0 }}
@@ -37,46 +37,41 @@ export default function FeaturedHighlights() {
           </h2>
         </motion.div>
 
-        <div className="grid grid-cols-1 md:grid-cols-4 gap-12 mb-24 relative">
-          <div className="hidden md:block absolute inset-0 pointer-events-none">
-            <div className="absolute left-1/4 top-0 h-full w-px bg-border" />
-            <div className="absolute left-2/4 top-0 h-full w-px bg-border" />
-            <div className="absolute left-3/4 top-0 h-full w-px bg-border" />
-          </div>
-
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8 mb-24 relative">
           {features.map((f, i) => (
             <Feature key={i} {...f} index={i} />
           ))}
         </div>
 
         <div className="relative pt-12 border-t border-border">
-          <div className="grid grid-cols-1 sm:grid-cols-4 gap-10 text-center sm:text-left">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
             <Stat
-              icon={<Users />}
+              icon={<Users className="w-6 h-6 text-primary" />}
               value={3500}
               suffix="K"
-              label="Customer"
-              sub="Total Customer"
+              label="Customers"
+              sub="Active community base"
             />
             <Stat
-              icon={<Package />}
+              icon={<Package className="w-6 h-6 text-primary" />}
               value={700}
+              suffix="+"
               label="Auctions"
-              sub="Total Product"
+              sub="Premium listings daily"
             />
             <Stat
-              icon={<UserCheck />}
+              icon={<UserCheck className="w-6 h-6 text-primary" />}
               value={5500}
               suffix="K"
-              label="Bidder"
-              sub="Number Of Total Bidder"
+              label="Bidders"
+              sub="Registered active bids"
             />
             <Stat
-              icon={<LifeBuoy />}
+              icon={<LifeBuoy className="w-6 h-6 text-primary" />}
               value={7400}
               suffix="K"
-              label="Accounts"
-              sub="User Helped"
+              label="Resolved"
+              sub="User queries answered"
             />
           </div>
         </div>
@@ -87,24 +82,24 @@ export default function FeaturedHighlights() {
 
 const features = [
   {
-    icon: <Handshake className="w-7 h-7 text-primary" />,
+    icon: <Handshake className="w-6 h-6 text-primary" />,
     title: "Discover the best deals",
-    text: "Egestas libero. Aenean id lacin est. Mauris urn purus, docni.",
+    text: "Access unmatched prices directly set by high-demand bidding auctions.",
   },
   {
-    icon: <Gavel className="w-7 h-7 text-primary" />,
+    icon: <Gavel className="w-6 h-6 text-primary" />,
     title: "Standout Auctions",
-    text: "Egestas libero. Aenean id lacin est. Mauris urn purus, docni.",
+    text: "Bid on curated antiques, rare jewelry, coins, and premium collectibles.",
   },
   {
-    icon: <ShieldCheck className="w-7 h-7 text-primary" />,
+    icon: <ShieldCheck className="w-6 h-6 text-primary" />,
     title: "Pay safely",
-    text: "Egestas libero. Aenean id lacin est. Mauris urn purus, docni.",
+    text: "All payments are processed securely via verified Stripe checkouts.",
   },
   {
-    icon: <HelpCircle className="w-7 h-7 text-primary" />,
+    icon: <LifeBuoy className="w-6 h-6 text-primary" />,
     title: "We're here to help",
-    text: "Egestas libero. Aenean id lacin est. Mauris urn purus, docni.",
+    text: "24/7 client support for hassle-free shipping and bidding transactions.",
   },
 ];
 
@@ -121,19 +116,25 @@ function Feature({
 }) {
   return (
     <motion.div
-      initial={{ opacity: 0, y: 40 }}
+      initial={{ opacity: 0, y: 30 }}
       whileInView={{ opacity: 1, y: 0 }}
-      transition={{ duration: 0.5, delay: index * 0.15 }}
+      transition={{ duration: 0.5, delay: index * 0.12 }}
       viewport={{ once: true }}
-      className="relative z-10 max-w-xs"
+      whileHover={{ y: -6, scale: 1.01 }}
+      className="relative z-10 bg-card border border-border p-6 rounded-3xl shadow-sm hover:shadow-xl hover:border-primary/20 transition-all duration-300 cursor-pointer group flex flex-col justify-between"
     >
-      <div className="mb-4">{icon}</div>
-      <h3 className="font-semibold text-lg text-foreground mb-2">
-        {title}
-      </h3>
-      <p className="text-sm text-muted-foreground leading-relaxed">
-        {text}
-      </p>
+      <div>
+        {/* Rounded Icon Backdrop */}
+        <div className="w-12 h-12 rounded-2xl bg-primary/10 flex items-center justify-center mb-5 transition-transform duration-500 group-hover:rotate-6">
+          {icon}
+        </div>
+        <h3 className="font-bold text-lg text-foreground mb-2 group-hover:text-primary transition-colors">
+          {title}
+        </h3>
+        <p className="text-sm text-muted-foreground leading-relaxed">
+          {text}
+        </p>
+      </div>
     </motion.div>
   );
 }
@@ -173,18 +174,19 @@ function Stat({
       whileInView={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.5 }}
       viewport={{ once: true }}
-      className="flex items-center gap-4 justify-start pl-7 sm:pl-0 sm:justify-start"
+      whileHover={{ scale: 1.02 }}
+      className="flex items-center gap-4 bg-card border border-border p-5 rounded-2xl shadow-sm hover:shadow-md hover:border-primary/20 transition-all cursor-pointer"
     >
-      <div className="text-muted-foreground">{icon}</div>
+      <div className="p-3 bg-muted rounded-xl text-primary">{icon}</div>
       <div>
-        <div className="text-lg font-semibold text-foreground">
+        <div className="text-lg font-black text-foreground tracking-tight">
           {count}
           {suffix}{" "}
-          <span className="font-medium text-sm text-muted-foreground">
+          <span className="font-bold text-xs text-primary bg-primary/10 px-2 py-0.5 rounded-md ml-1 inline-block">
             {label}
           </span>
         </div>
-        <p className="text-xs text-muted-foreground">{sub}</p>
+        <p className="text-[10px] uppercase font-black tracking-wider text-muted-foreground mt-0.5">{sub}</p>
       </div>
     </motion.div>
   );

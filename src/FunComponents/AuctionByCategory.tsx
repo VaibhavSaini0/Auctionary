@@ -1,77 +1,68 @@
 "use client";
 
 import Image from "next/image";
-import { ChevronLeft, ChevronRight } from "lucide-react";
+import { ChevronLeft, ChevronRight, Paintbrush, CircleDollarSign, Sofa, Music, Gem } from "lucide-react";
 import { useRef } from "react";
+import { motion } from "framer-motion";
 
 const categories = [
   {
     title: "Ceramics",
-    titlesrc:
-      "https://probid-wp.egenstheme.com/antiques-auction/wp-content/uploads/sites/8/2024/10/ceramics.svg",
+    icon: <Paintbrush className="w-6 h-6 text-primary" />,
     items: "4 Items",
     img: "https://images.unsplash.com/photo-1582582494700-9c6c3f4fcd0d",
   },
   {
     title: "Coins",
-    titlesrc:
-      "https://probid-wp.egenstheme.com/antiques-auction/wp-content/uploads/sites/8/2024/10/ceramics.svg",
+    icon: <CircleDollarSign className="w-6 h-6 text-primary" />,
     items: "2 Items",
     img: "https://images.unsplash.com/photo-1610374781660-6c6c44d0f27f",
   },
   {
     title: "Furniture",
-    titlesrc:
-      "https://probid-wp.egenstheme.com/antiques-auction/wp-content/uploads/sites/8/2024/10/ceramics.svg",
+    icon: <Sofa className="w-6 h-6 text-primary" />,
     items: "8 Items",
     img: "https://images.unsplash.com/photo-1549187774-b4e9b0445b41",
   },
   {
     title: "Instruments",
-    titlesrc:
-      "https://probid-wp.egenstheme.com/antiques-auction/wp-content/uploads/sites/8/2024/10/ceramics.svg",
+    icon: <Music className="w-6 h-6 text-primary" />,
     items: "8 Items",
     img: "https://images.unsplash.com/photo-1519682577862-22b62b24e493",
   },
   {
     title: "Jewelry",
-    titlesrc:
-      "https://probid-wp.egenstheme.com/antiques-auction/wp-content/uploads/sites/8/2024/10/ceramics.svg",
+    icon: <Gem className="w-6 h-6 text-primary" />,
     items: "3 Items",
     img: "https://images.unsplash.com/photo-1606760227091-3dd870d97f1d",
   },
   {
     title: "Ceramics",
-    titlesrc:
-      "https://probid-wp.egenstheme.com/antiques-auction/wp-content/uploads/sites/8/2024/10/ceramics.svg",
+    icon: <Paintbrush className="w-6 h-6 text-primary" />,
     items: "4 Items",
     img: "https://images.unsplash.com/photo-1582582494700-9c6c3f4fcd0d",
   },
   {
     title: "Coins",
-    titlesrc:
-      "https://probid-wp.egenstheme.com/antiques-auction/wp-content/uploads/sites/8/2024/10/ceramics.svg",
+    icon: <CircleDollarSign className="w-6 h-6 text-primary" />,
     items: "2 Items",
     img: "https://images.unsplash.com/photo-1610374781660-6c6c44d0f27f",
   },
   {
     title: "Furniture",
-    titlesrc:
-      "https://probid-wp.egenstheme.com/antiques-auction/wp-content/uploads/sites/8/2024/10/ceramics.svg",
+    icon: <Sofa className="w-6 h-6 text-primary" />,
     items: "8 Items",
     img: "https://images.unsplash.com/photo-1549187774-b4e9b0445b41",
   },
   {
     title: "Instruments",
-    titlesrc:
-      "https://probid-wp.egenstheme.com/antiques-auction/wp-content/uploads/sites/8/2024/10/ceramics.svg",
+    icon: <Music className="w-6 h-6 text-primary" />,
     items: "8 Items",
     img: "https://images.unsplash.com/photo-1519682577862-22b62b24e493",
   },
   {
     title: "Jewelry",
-    titlesrc:
-      "https://probid-wp.egenstheme.com/antiques-auction/wp-content/uploads/sites/8/2024/10/ceramics.svg",
+    icon: <Gem className="w-6 h-6 text-primary" />,
     items: "3 Items",
     img: "https://images.unsplash.com/photo-1606760227091-3dd870d97f1d",
   },
@@ -90,33 +81,32 @@ export default function AuctionByCategory() {
   };
 
   return (
-    <section className="relative py-14 overflow-x-hidden">
-      <div className="absolute inset-0 bg-muted/40" />
+    <section className="relative py-20 overflow-x-hidden bg-background">
+      <div className="absolute inset-0 bg-muted/20" />
 
-      <div className="relative max-w-370 mx-auto px-6">
-        <div className="flex items-center justify-between mb-14">
+      <div className="relative max-w-[1400px] mx-auto px-6">
+        <div className="flex items-center justify-between mb-12">
           <div>
-            <span className="inline-block text-xs tracking-widest px-4 py-1 rounded-full border border-border bg-card mb-3 text-muted-foreground">
-              → EXPLORE OUR
+            <span className="inline-block text-[10px] tracking-widest px-4 py-1.5 rounded-full border border-border bg-card mb-3 text-muted-foreground font-black">
+              ✦ EXPLORE OUR
             </span>
-            <h2 className="text-4xl font-semibold text-foreground">
-              Browse by{" "}
-              <span className="text-muted-foreground font-normal">
-                Category
-              </span>
+            <h2 className="text-3xl md:text-4xl font-black text-foreground tracking-tight">
+              Browse by <span className="text-orange-500 font-light font-serif italic">Category</span>
             </h2>
           </div>
 
           <div className="flex items-center gap-3">
             <button
               onClick={() => scroll("left")}
-              className="w-10 h-10 rounded-full border border-border flex items-center justify-center bg-card hover:bg-muted transition"
+              className="w-11 h-11 rounded-full border border-border flex items-center justify-center bg-card hover:bg-primary hover:text-white hover:border-primary transition-all duration-300 shadow-sm hover:scale-105 active:scale-95 cursor-pointer"
+              aria-label="Previous categories"
             >
               <ChevronLeft size={18} />
             </button>
             <button
               onClick={() => scroll("right")}
-              className="w-10 h-10 rounded-full border border-border flex items-center justify-center bg-card hover:bg-muted transition"
+              className="w-11 h-11 rounded-full border border-border flex items-center justify-center bg-card hover:bg-primary hover:text-white hover:border-primary transition-all duration-300 shadow-sm hover:scale-105 active:scale-95 cursor-pointer"
+              aria-label="Next categories"
             >
               <ChevronRight size={18} />
             </button>
@@ -128,30 +118,36 @@ export default function AuctionByCategory() {
           className="flex gap-7 overflow-x-auto pb-8 scrollbar-hide scroll-smooth snap-x snap-mandatory overscroll-x-contain"
         >
           {categories.map((cat, i) => (
-            <div key={i} className="relative min-w-65 snap-start pt-8">
+            <div key={i} className="relative min-w-[260px] snap-start pt-8">
+              {/* Category Icon Badge */}
               <div className="absolute top-0 left-1/2 -translate-x-1/2 z-20">
-                <div className="w-16 h-16 rounded-full bg-card p-2 flex items-center justify-center shadow-md border border-border">
-                  <img
-                    src={cat.titlesrc}
-                    alt=""
-                    className="w-full h-full object-contain"
-                  />
-                </div>
+                <motion.div 
+                  whileHover={{ scale: 1.15, rotate: 10 }}
+                  className="w-16 h-16 rounded-full bg-card p-2 flex items-center justify-center shadow-lg border border-border transition-all cursor-pointer"
+                >
+                  {cat.icon}
+                </motion.div>
               </div>
 
-              <div className="group relative h-55 rounded-2xl overflow-hidden bg-muted hover:-translate-y-1 hover:shadow-xl transition-all duration-300">
+              {/* Glassmorphic/Premium Category Image Container */}
+              <div className="group relative h-60 rounded-3xl overflow-hidden bg-card border border-border hover:-translate-y-1.5 hover:shadow-2xl hover:border-primary/20 transition-all duration-500 cursor-pointer">
                 <Image
                   src={cat.img}
                   alt={cat.title}
                   fill
+                  sizes="260px"
                   className="object-cover transition-transform duration-700 ease-out group-hover:scale-110"
                 />
 
-                <div className="absolute bottom-4 left-1/2 -translate-x-1/2 bg-card rounded-xl px-6 py-3 text-center shadow border border-border">
-                  <p className="font-semibold text-foreground">
+                {/* Dark Vignette Overlay */}
+                <div className="absolute inset-0 bg-gradient-to-t from-black/50 via-transparent to-transparent opacity-80 group-hover:opacity-90 transition-opacity duration-300" />
+
+                {/* Glassmorphic Category Info Pill */}
+                <div className="absolute bottom-4 left-1/2 -translate-x-1/2 bg-card/80 backdrop-blur-md rounded-2xl px-6 py-3 text-center shadow-lg border border-white/20 w-[80%] transition-transform duration-300 group-hover:scale-[1.03]">
+                  <p className="font-bold text-foreground tracking-wide">
                     {cat.title}
                   </p>
-                  <p className="text-xs text-muted-foreground">
+                  <p className="text-[10px] text-muted-foreground font-black uppercase tracking-wider">
                     {cat.items}
                   </p>
                 </div>

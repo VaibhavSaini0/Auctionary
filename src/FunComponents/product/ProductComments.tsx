@@ -1,8 +1,9 @@
 "use client";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { supabase } from "@/lib/supabase/client";
 import { Star, Loader2 } from "lucide-react";
 import { useAuth } from "@clerk/nextjs";
+import { toast } from "sonner";
 
 export default function ProductComments({
   auctionId,
@@ -16,6 +17,7 @@ export default function ProductComments({
   const [comments, setComments] = useState<any[]>([]);
   const [isFetching, setIsFetching] = useState(true);
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const profileCache = useRef<Record<string, any>>({});
   const { getToken } = useAuth();
 
   useEffect(() => {
@@ -48,11 +50,21 @@ export default function ProductComments({
           filter: `auction_item_id=eq.${auctionId}`,
         },
         async (payload) => {
-          const { data: profile } = await supabase
-            .from("profiles")
-            .select("full_name, avatar_url")
-            .eq("id", payload.new.commenter_id)
-            .single();
+          const commenterId = payload.new.commenter_id;
+          let profile = profileCache.current[commenterId];
+
+          if (!profile) {
+            const { data: fetchedProfile } = await supabase
+              .from("profiles")
+              .select("full_name, avatar_url")
+              .eq("id", commenterId)
+              .single();
+            
+            if (fetchedProfile) {
+              profile = fetchedProfile;
+              profileCache.current[commenterId] = fetchedProfile;
+            }
+          }
 
           setComments((prev) => [
             { ...payload.new, profiles: profile },
@@ -69,8 +81,14 @@ export default function ProductComments({
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!text.trim()) return alert("Please enter a comment");
-    if (!userId) return alert("Please sign in to comment");
+    if (!text.trim()) {
+      toast.error("Please enter a comment");
+      return;
+    }
+    if (!userId) {
+      toast.error("Please sign in to comment");
+      return;
+    }
 
     try {
       setIsSubmitting(true);

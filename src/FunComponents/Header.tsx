@@ -26,12 +26,15 @@ import {
   BookOpen,
   Info,
   MessageSquare,
-  ChevronRight
+  ChevronRight,
+  Sun,
+  Moon
 } from "lucide-react";
 import { motion, AnimatePresence, Variants } from "framer-motion";
 import { SignInButton, useClerk, useUser, useAuth } from "@clerk/nextjs";
 import { supabase, createClerkSupabaseClient } from "@/lib/supabase/client";
 import { useEffect, useState } from "react";
+import { useTheme } from "next-themes";
 import NotificationBell from "./Notification";
 import HeaderSearch from "./HeaderSearch";
 
@@ -96,6 +99,12 @@ export default function Header() {
   const { isLoaded, isSignedIn, user } = useUser();
   const { getToken } = useAuth();
   const pathname = usePathname();
+  const { theme, setTheme } = useTheme();
+  const [mounted, setMounted] = useState(false);
+
+  useEffect(() => {
+    setMounted(true);
+  }, []);
 
   useEffect(() => {
     if (isLoaded && isSignedIn && user) {
@@ -206,6 +215,16 @@ export default function Header() {
                 <Bell size={20} />
               </Button>
             )}
+
+            <Button
+              size="icon"
+              variant="ghost"
+              className="rounded-full text-muted-foreground hover:text-foreground hover:bg-muted/60 transition-colors cursor-pointer"
+              onClick={() => setTheme(theme === "dark" ? "light" : "dark")}
+              aria-label="Toggle Theme"
+            >
+              {mounted && theme === "dark" ? <Sun size={20} /> : <Moon size={20} />}
+            </Button>
 
             {!isSignedIn ? (
               <SignInButton mode="modal">
@@ -396,6 +415,16 @@ export default function Header() {
                         <span className="text-xs font-bold text-foreground">Sell Item</span>
                       </Link>
                     </div>
+                    <button
+                      onClick={() => setTheme(theme === "dark" ? "light" : "dark")}
+                      className="mt-3 w-full flex justify-between items-center py-3 px-4 rounded-xl font-bold bg-muted hover:bg-muted/80 text-foreground transition-all cursor-pointer border border-border/60"
+                    >
+                      <span className="flex items-center gap-3">
+                        {mounted && theme === "dark" ? <Sun size={18} className="text-primary" /> : <Moon size={18} className="text-primary" />}
+                        <span>Toggle Theme</span>
+                      </span>
+                      <span className="text-xs text-muted-foreground capitalize font-bold">{mounted ? theme : ""}</span>
+                    </button>
                   </motion.div>
                 </motion.nav>
               </div>

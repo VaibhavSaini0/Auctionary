@@ -6,7 +6,7 @@ import { useAuth } from "@clerk/nextjs";
 import { formatDistanceToNow } from "date-fns";
 import ChatRoom from "./ChatRoom";
 
-export default function AuctionSideTabs({ auctionId }: { auctionId: number }) {
+export default function AuctionSideTabs({ auctionId }: { auctionId: string }) {
   const [active, setActive] = useState("Auction History");
   const [bids, setBids] = useState<any[]>([]);
   const { userId } = useAuth();

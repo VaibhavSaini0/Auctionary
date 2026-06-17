@@ -1,6 +1,6 @@
 "use client";
 
-import { Pencil, Save, Loader2 } from "lucide-react";
+import { Pencil, Save, Loader2, Settings } from "lucide-react";
 import { useState } from "react";
 import { updateSellerProfile } from "@/app/actions/profile";
 import { toast } from "sonner";

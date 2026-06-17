@@ -10,7 +10,7 @@ export default function ChatRoom({
   auctionId,
   userId,
 }: {
-  auctionId: number;
+  auctionId: string;
   userId: string | null | undefined;
 }) {
   const [messages, setMessages] = useState<any[]>([]);

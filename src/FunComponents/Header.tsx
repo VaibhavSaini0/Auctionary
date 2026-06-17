@@ -29,8 +29,8 @@ import {
   ChevronRight
 } from "lucide-react";
 import { motion, AnimatePresence, Variants } from "framer-motion";
-import { SignInButton, useClerk, useUser } from "@clerk/nextjs";
-import { supabase } from "@/lib/supabase/client";
+import { SignInButton, useClerk, useUser, useAuth } from "@clerk/nextjs";
+import { supabase, createClerkSupabaseClient } from "@/lib/supabase/client";
 import { useEffect, useState } from "react";
 import NotificationBell from "./Notification";
 import HeaderSearch from "./HeaderSearch";
@@ -69,7 +69,7 @@ const containerVariants = {
   },
 };
 
-const itemVariants = {
+const itemVariants: Variants = {
   open: {
     x: 0,
     opacity: 1,
@@ -94,18 +94,29 @@ export default function Header() {
   const [open, setOpen] = useState(false);
   const { signOut } = useClerk();
   const { isLoaded, isSignedIn, user } = useUser();
+  const { getToken } = useAuth();
   const pathname = usePathname();
 
   useEffect(() => {
     if (isLoaded && isSignedIn && user) {
-      supabase.from("profiles").upsert({
-        id: user.id,
-        full_name: user.fullName,
-        email: user.primaryEmailAddress?.emailAddress,
-        avatar_url: user.imageUrl,
-      });
+      const syncProfile = async () => {
+        try {
+          const token = await getToken({ template: "supabase" });
+          if (!token) return;
+          const authenticatedSupabase = createClerkSupabaseClient(token);
+          await authenticatedSupabase.from("profiles").upsert({
+            id: user.id,
+            full_name: user.fullName,
+            email: user.primaryEmailAddress?.emailAddress,
+            avatar_url: user.imageUrl,
+          });
+        } catch (err) {
+          console.error("Error syncing profile to Supabase:", err);
+        }
+      };
+      syncProfile();
     }
-  }, [isLoaded, isSignedIn, user]);
+  }, [isLoaded, isSignedIn, user, getToken]);
 
   return (
     <header className="sticky top-0 z-50 border-b border-border/80 bg-background/95 backdrop-blur-md supports-[backdrop-filter]:bg-background/80 shadow-sm transition-all duration-300">
@@ -230,6 +241,7 @@ export default function Header() {
                   <DropdownMenuItem asChild>
                     <Link
                       href="/profile"
+                      prefetch={false}
                       className="profile-menu-item flex items-center gap-2.5 px-3 py-2.5 rounded-xl text-sm font-semibold text-foreground/80 hover:text-foreground cursor-pointer"
                     >
                       <Settings size={15} className="opacity-70" /> Profile Settings
@@ -336,23 +348,26 @@ export default function Header() {
                       </motion.div>
                     );
                   })}
-                  <motion.div variants={itemVariants}>
-                    <Link
-                      href="/profile"
-                      className={`flex justify-between items-center py-3 px-4 rounded-xl font-bold transition-all duration-200 group ${
-                        pathname === "/profile"
-                          ? "bg-primary text-primary-foreground shadow-lg shadow-primary/20"
-                          : "text-foreground/80 hover:bg-muted hover:text-foreground border border-transparent hover:border-border/60"
-                      }`}
-                      onClick={() => setOpen(false)}
-                    >
-                      <div className="flex items-center gap-3">
-                        <UserCircle size={18} className={pathname === "/profile" ? "text-primary-foreground" : "text-muted-foreground group-hover:text-primary transition-colors"} />
-                        <span>Profile Settings</span>
-                      </div>
-                      <ChevronRight size={14} className={`transition-transform duration-200 ${pathname === "/profile" ? "text-primary-foreground translate-x-0.5" : "text-muted-foreground/60 group-hover:translate-x-0.5"}`} />
-                    </Link>
-                  </motion.div>
+                  {isSignedIn && (
+                    <motion.div variants={itemVariants}>
+                      <Link
+                        href="/profile"
+                        prefetch={false}
+                        className={`flex justify-between items-center py-3 px-4 rounded-xl font-bold transition-all duration-200 group ${
+                          pathname === "/profile"
+                            ? "bg-primary text-primary-foreground shadow-lg shadow-primary/20"
+                            : "text-foreground/80 hover:bg-muted hover:text-foreground border border-transparent hover:border-border/60"
+                        }`}
+                        onClick={() => setOpen(false)}
+                      >
+                        <div className="flex items-center gap-3">
+                          <UserCircle size={18} className={pathname === "/profile" ? "text-primary-foreground" : "text-muted-foreground group-hover:text-primary transition-colors"} />
+                          <span>Profile Settings</span>
+                        </div>
+                        <ChevronRight size={14} className={`transition-transform duration-200 ${pathname === "/profile" ? "text-primary-foreground translate-x-0.5" : "text-muted-foreground/60 group-hover:translate-x-0.5"}`} />
+                      </Link>
+                    </motion.div>
+                  )}
 
                   {/* Actions & Guides Section inside mobile menu */}
                   <motion.div variants={itemVariants} className="pt-4 mt-4 border-t border-border/50">

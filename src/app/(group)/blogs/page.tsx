@@ -7,11 +7,13 @@ import { motion } from "framer-motion";
 import { useState, useEffect } from "react";
 import { supabase } from "@/lib/supabase/client";
 import { toast } from "sonner";
+import { SignInButton, useUser } from "@clerk/nextjs";
 
 const POSTS_PER_PAGE = 4;
 const FALLBACK_IMAGE = "https://images.unsplash.com/photo-1516979187457-637abb4f9353";
 
 export default function BlogPage() {
+  const { isSignedIn } = useUser();
   const [posts, setPosts] = useState<any[]>([]);
   const [categories, setCategories] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
@@ -276,23 +278,39 @@ export default function BlogPage() {
           {/* Sticky Sidebar Container */}
           <aside className="space-y-8 lg:sticky lg:top-24">
             {/* Dashboard Action panel */}
-            <div className="bg-card border border-border rounded-3xl p-6 shadow-sm space-y-3.5">
-              <h3 className="text-xs font-black uppercase tracking-wider text-muted-foreground mb-1">Writer Toolkit</h3>
-              
-              <Link
-                href="/blogs/create"
-                className="w-full flex items-center justify-center gap-2 bg-foreground text-background py-3.5 rounded-2xl text-sm font-bold hover:bg-primary hover:text-white transition-all shadow-md active:scale-98"
-              >
-                <TagIcon size={16} /> Create New Post
-              </Link>
-              
-              <Link
-                href="/blogs/manage"
-                className="w-full flex items-center justify-center gap-2 bg-muted/60 text-foreground py-3.5 rounded-2xl text-sm font-bold hover:bg-primary hover:text-white transition-all shadow-sm active:scale-98"
-              >
-                <PenSquareIcon size={16} /> Manage Writing Dashboard
-              </Link>
-            </div>
+            {isSignedIn ? (
+              <div className="bg-card border border-border rounded-3xl p-6 shadow-sm space-y-3.5">
+                <h3 className="text-xs font-black uppercase tracking-wider text-muted-foreground mb-1">Writer Toolkit</h3>
+                
+                <Link
+                  href="/blogs/create"
+                  prefetch={false}
+                  className="w-full flex items-center justify-center gap-2 bg-foreground text-background py-3.5 rounded-2xl text-sm font-bold hover:bg-primary hover:text-white transition-all shadow-md active:scale-98"
+                >
+                  <TagIcon size={16} /> Create New Post
+                </Link>
+                
+                <Link
+                  href="/blogs/manage"
+                  prefetch={false}
+                  className="w-full flex items-center justify-center gap-2 bg-muted/60 text-foreground py-3.5 rounded-2xl text-sm font-bold hover:bg-primary hover:text-white transition-all shadow-sm active:scale-98"
+                >
+                  <PenSquareIcon size={16} /> Manage Writing Dashboard
+                </Link>
+              </div>
+            ) : (
+              <div className="bg-card border border-border rounded-3xl p-6 shadow-sm space-y-3.5">
+                <h3 className="text-xs font-black uppercase tracking-wider text-muted-foreground mb-1">Writer Toolkit</h3>
+                <p className="text-xs text-muted-foreground leading-relaxed">
+                  Sign in to create your own blog posts and manage your writing dashboard.
+                </p>
+                <SignInButton mode="modal">
+                  <button className="w-full flex items-center justify-center gap-2 bg-primary text-white py-3.5 rounded-2xl text-sm font-bold hover:bg-primary/95 transition-all shadow-md active:scale-98 cursor-pointer">
+                    Sign In to Write
+                  </button>
+                </SignInButton>
+              </div>
+            )}
 
 
             {/* Categories Selection */}

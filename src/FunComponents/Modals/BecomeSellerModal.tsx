@@ -20,7 +20,6 @@ export default function BecomeSeller() {
       toast.success("Seller account activated!", { id: toastId });
       setOpen(false);
       router.refresh();
-      window.location.reload();
     } catch (err: any) {
       toast.error(err.message || "Failed to activate account", { id: toastId });
     } finally {

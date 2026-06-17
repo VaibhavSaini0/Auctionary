@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { supabase } from "@/lib/supabase/client";
 import { useAuth } from "@clerk/nextjs";
+import { toast } from "sonner";
 import {
   Wallet,
   CreditCard,
@@ -21,7 +22,7 @@ export default function AddFundsModal() {
 
   const handleAddFunds = async () => {
     if (!amount || amount < 100) {
-      alert("Minimum top-up amount is ₹100");
+      toast.error("Minimum top-up amount is ₹100");
       return;
     }
 
@@ -43,7 +44,7 @@ export default function AddFundsModal() {
       }
     } catch (err: any) {
       console.error("Payment Error:", err);
-      alert(err.message || "Something went wrong");
+      toast.error(err.message || "Something went wrong");
     } finally {
       setLoading(false);
     }

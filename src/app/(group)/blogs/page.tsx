@@ -24,17 +24,20 @@ export default function BlogPage() {
   const [searchQuery, setSearchQuery] = useState("");
 
   useEffect(() => {
+    let active = true;
     const fetchData = async () => {
       setLoading(true);
       setError(false);
       try {
-        const { data: catData, error: catError } = await supabase
-          .from("categories")
-          .select("name")
-          .order("name");
+        if (categories.length === 0) {
+          const { data: catData, error: catError } = await supabase
+            .from("categories")
+            .select("name")
+            .order("name");
 
-        if (catError) console.error("Categories fetch failed:", catError);
-        if (catData) setCategories(catData);
+          if (catError) console.error("Categories fetch failed:", catError);
+          if (catData && active) setCategories(catData);
+        }
 
         let query = supabase
           .from("blogs")
@@ -53,55 +56,24 @@ export default function BlogPage() {
 
         if (blogsError) throw blogsError;
 
-        setPosts(data || []);
-        setTotalCount(count || 0);
+        if (active) {
+          setPosts(data || []);
+          setTotalCount(count || 0);
+        }
       } catch (err) {
         console.error("Blogs fetch failed:", err);
-        setError(true);
+        if (active) setError(true);
       } finally {
-        setLoading(false);
+        if (active) setLoading(false);
       }
     };
-
-    // Reset page on filter changes
-    setCurrentPage(1);
 
     const t = setTimeout(fetchData, 350);
-    return () => clearTimeout(t);
-  }, [selectedCategory, searchQuery]);
-
-  // Handle page changes separately to preserve page selection
-  useEffect(() => {
-    const fetchPageData = async () => {
-      setLoading(true);
-      try {
-        let query = supabase
-          .from("blogs")
-          .select("*", { count: "exact" })
-          .eq("is_published", true)
-          .order("created_at", { ascending: false });
-
-        if (selectedCategory !== "All") query = query.eq("category", selectedCategory);
-        if (searchQuery)
-          query = query.or(`title.ilike.%${searchQuery}%,excerpt.ilike.%${searchQuery}%`);
-
-        const { data, count, error: pageError } = await query.range(
-          (currentPage - 1) * POSTS_PER_PAGE,
-          currentPage * POSTS_PER_PAGE - 1
-        );
-
-        if (pageError) throw pageError;
-        setPosts(data || []);
-        setTotalCount(count || 0);
-      } catch (err) {
-        console.error("Page fetch failed:", err);
-        setError(true);
-      } finally {
-        setLoading(false);
-      }
+    return () => {
+      active = false;
+      clearTimeout(t);
     };
-    fetchPageData();
-  }, [currentPage]);
+  }, [selectedCategory, searchQuery, currentPage]);
 
   const totalPages = Math.ceil(totalCount / POSTS_PER_PAGE);
 
@@ -139,13 +111,19 @@ export default function BlogPage() {
             <div className="relative flex-1 sm:w-64 md:w-72 lg:w-80">
               <input
                 value={searchQuery}
-                onChange={(e) => setSearchQuery(e.target.value)}
+                onChange={(e) => {
+                  setSearchQuery(e.target.value);
+                  setCurrentPage(1);
+                }}
                 placeholder="Search articles..."
                 className="w-full pl-5 pr-10 py-3.5 rounded-2xl bg-muted/40 border border-border focus:outline-none focus:ring-2 focus:ring-primary/30 focus:border-primary text-sm transition-all font-semibold text-foreground placeholder-muted-foreground/50"
               />
               {searchQuery && (
                 <button
-                  onClick={() => setSearchQuery("")}
+                  onClick={() => {
+                    setSearchQuery("");
+                    setCurrentPage(1);
+                  }}
                   className="absolute right-3.5 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground cursor-pointer"
                 >
                   <X size={16} />
@@ -318,7 +296,10 @@ export default function BlogPage() {
               <h3 className="text-sm font-bold text-foreground mb-4">Categories</h3>
               <ul className="space-y-2.5">
                 <li
-                  onClick={() => setSelectedCategory("All")}
+                  onClick={() => {
+                    setSelectedCategory("All");
+                    setCurrentPage(1);
+                  }}
                   className={`cursor-pointer text-sm py-2 px-3 rounded-xl transition-all font-semibold flex items-center justify-between ${
                     selectedCategory === "All"
                       ? "bg-primary/10 text-primary font-bold"
@@ -331,7 +312,10 @@ export default function BlogPage() {
                 {categories.map((cat) => (
                   <li
                     key={cat.name}
-                    onClick={() => setSelectedCategory(cat.name)}
+                    onClick={() => {
+                      setSelectedCategory(cat.name);
+                      setCurrentPage(1);
+                    }}
                     className={`cursor-pointer text-sm py-2 px-3 rounded-xl transition-all font-semibold flex items-center justify-between ${
                       selectedCategory === cat.name
                         ? "bg-primary/10 text-primary font-bold"

@@ -16,8 +16,10 @@ interface AuctionItem {
 
 export default function SellingProductTab({
   sellingAuctions,
+  isSeller,
 }: {
   sellingAuctions: AuctionItem[];
+  isSeller: boolean;
 }) {
   const userId = useUser().user?.id || "";
   return (
@@ -31,9 +33,11 @@ export default function SellingProductTab({
             Manage and monitor your live auction items
           </p>
         </div>
-        <div className="w-full sm:w-auto flex justify-end">
-          <AddAuctionModal userId={userId} />
-        </div>
+        {isSeller && (
+          <div className="w-full sm:w-auto flex justify-end">
+            <AddAuctionModal userId={userId} />
+          </div>
+        )}
       </div>
 
       {sellingAuctions.length === 0 ? (

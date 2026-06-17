@@ -9,30 +9,31 @@ import Link from "next/link";
 export default function OrdersTab({ userId }: { userId: string }) {
   const [orders, setOrders] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
-useEffect(() => {
+  useEffect(() => {
     async function fetchOrders() {
       setLoading(true);
-      console.log("Fetching orders for userId:", userId); // Debugging line
+      try {
+        const { data, error } = await supabase
+          .from("orders")
+          .select(`
+            *,
+            auction_items (
+              title,
+              image_url,
+              status
+            )
+          `)
+          .eq("buyer_id", userId)
+          .order("created_at", { ascending: false });
 
-      const { data, error } = await supabase
-        .from("orders")
-        .select(`
-          *,
-          auction_items (
-            title,
-            image_url,
-            status
-          )
-        `)
-        .eq("buyer_id", userId)
-        .order("created_at", { ascending: false });
-
-      if (error) {
-        console.error("Supabase Error:", error.message);
-        console.error("Error Details:", error.details);
-      } else {
-        console.log("Data received from Supabase:", data);
-        setOrders(data || []);
+        if (error) {
+          console.error("Supabase Error:", error.message);
+        } else {
+          setOrders(data || []);
+        }
+      } catch (err) {
+        console.error("Error fetching orders:", err);
+      } finally {
         setLoading(false);
       }
     }
@@ -61,7 +62,7 @@ useEffect(() => {
             {/* Item Image */}
             <div className="relative w-full md:w-32 h-32 rounded-2xl overflow-hidden bg-muted border border-border/60 flex-shrink-0">
               <Image
-                src={order.auction_items?.image_url || "/placeholder.jpg"}
+                src={order.auction_items?.image_url || "/placeholder.png"}
                 alt={order.auction_items?.title}
                 fill
                 className="object-cover group-hover:scale-105 transition-transform duration-500"

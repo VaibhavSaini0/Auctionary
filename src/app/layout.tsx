@@ -3,6 +3,7 @@ import { type Metadata } from 'next'
 import { ClerkProvider } from '@clerk/nextjs'
 import { Geist, Geist_Mono } from 'next/font/google'
 import './globals.css'
+import { ThemeProvider } from "next-themes"
 import { UserProvider } from "@/FunComponents/Context/UserContext"
 import Header from '@/FunComponents/Header'
 import Footer from '@/FunComponents/footer'
@@ -29,14 +30,16 @@ export default function RootLayout({
 }>) {
   return (
     <ClerkProvider>
-      <html lang="en">
+      <html lang="en" suppressHydrationWarning>
         <body className={`${geistSans.variable} ${geistMono.variable} antialiased`}>
-          <UserProvider>
-            <Header/>
-            {children}
-              <Toaster />
-            <Footer/>
-          </UserProvider>
+          <ThemeProvider attribute="class" defaultTheme="system" enableSystem>
+            <UserProvider>
+              <Header/>
+              {children}
+                <Toaster />
+              <Footer/>
+            </UserProvider>
+          </ThemeProvider>
         </body>
       </html>
     </ClerkProvider>

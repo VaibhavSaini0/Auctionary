@@ -161,7 +161,7 @@ export default async function ProfilePage() {
       <div className="bg-card border border-border rounded-2xl sm:rounded-[2rem] p-4 sm:p-8 shadow-sm">
         <ProfileTabs>
           <Suspense fallback={<div className="py-12 text-center animate-pulse text-muted-foreground font-semibold">Loading selling products...</div>}>
-            <SellingProductTab sellingAuctions={auctions} />
+            <SellingProductTab sellingAuctions={auctions} isSeller={isSeller} />
           </Suspense>
 
           <ParticipatingTab myBids={myBids} />

@@ -1,16 +1,7 @@
-import { UserProvider } from "@/FunComponents/Context/UserContext"
-
-export default function RootLayout({
+export default function GroupLayout({
   children,
 }: Readonly<{
   children: React.ReactNode
 }>) {
-  return (
-  <>
-    <UserProvider>
-      {children}
-    </UserProvider>
-  </>
-          
-  )
+  return <>{children}</>;
 }

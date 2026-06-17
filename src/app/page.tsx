@@ -1,5 +1,6 @@
 "use client";
 
+import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { Facebook, Twitter, Instagram, ArrowDownRight } from "lucide-react";
 import { motion, Variants } from "framer-motion";
@@ -112,22 +113,26 @@ export default function Home() {
                 className="flex flex-col sm:flex-row gap-4 mb-16"
                 variants={textItem}
               >
-                <Button
-                  className="px-8 py-7 text-lg font-bold rounded-full transition-all hover:scale-105 active:scale-95 flex gap-2 hover:shadow-lg hover:shadow-orange-500/20 cursor-pointer"
-                  style={{
-                    backgroundColor: "rgb(238, 126, 68)",
-                    color: "white",
-                  }}
-                >
-                  Start A Bid <ArrowDownRight className="w-5 h-5 transition-transform group-hover:translate-x-1" />
-                </Button>
+                <Link href="/auction-products" className="contents">
+                  <Button
+                    className="px-8 py-7 text-lg font-bold rounded-full transition-all hover:scale-105 active:scale-95 flex gap-2 hover:shadow-lg hover:shadow-orange-500/20 cursor-pointer w-full sm:w-auto"
+                    style={{
+                      backgroundColor: "rgb(238, 126, 68)",
+                      color: "white",
+                    }}
+                  >
+                    Start A Bid <ArrowDownRight className="w-5 h-5 transition-transform group-hover:translate-x-1" />
+                  </Button>
+                </Link>
 
-                <Button
-                  variant="outline"
-                  className="px-8 py-7 text-lg font-bold rounded-full bg-white/10 hover:bg-white text-white hover:text-black border border-white/20 hover:border-white transition-all hover:scale-105 active:scale-95 cursor-pointer"
-                >
-                  View All Auction
-                </Button>
+                <Link href="/auction-products" className="contents">
+                  <Button
+                    variant="outline"
+                    className="px-8 py-7 text-lg font-bold rounded-full bg-white/10 hover:bg-white text-white hover:text-black border border-white/20 hover:border-white transition-all hover:scale-105 active:scale-95 cursor-pointer w-full sm:w-auto"
+                  >
+                    View All Auction
+                  </Button>
+                </Link>
               </motion.div>
 
               <motion.div

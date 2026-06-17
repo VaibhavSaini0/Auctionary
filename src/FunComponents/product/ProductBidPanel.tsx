@@ -1,15 +1,21 @@
 "use client";
 
-import { Minus, Plus, Clock, Loader2, Store } from "lucide-react";
+import { Minus, Plus, Clock, Loader2, Store, ShoppingBag } from "lucide-react";
 import { useState, useEffect, useCallback } from "react";
 import { useAuth } from "@clerk/nextjs";
 import { toast } from "sonner";
+import { useUserDetails } from "../Context/UserContext";
+import { buyNowAction } from "@/app/actions/auctions";
+import Link from "next/link";
 
 export default function ProductBidPanel({ auction, amount, setAmount }: any) {
   const { userId, getToken } = useAuth();
+  const { profile } = useUserDetails();
+  const walletBalance = profile?.current_balance ?? 0;
 
   const displayPrice = auction.current_bid ?? auction.starting_bid;
   const [loading, setLoading] = useState(false);
+  const [buyingNow, setBuyingNow] = useState(false);
   const [timeLeft, setTimeLeft] = useState("");
   const [isExpired, setIsExpired] = useState(false);
 
@@ -65,6 +71,10 @@ export default function ProductBidPanel({ auction, amount, setAmount }: any) {
       );
       return;
     }
+    if (walletBalance < amount) {
+      toast.error("Insufficient wallet balance. Please add funds to place your bid.");
+      return;
+    }
 
     setLoading(true);
 
@@ -95,6 +105,44 @@ export default function ProductBidPanel({ auction, amount, setAmount }: any) {
       toast.error(err.message);
     } finally {
       setLoading(false);
+    }
+  }
+
+  async function handleBuyNow() {
+    if (!userId) {
+      toast.error("Please log in to buy this item.");
+      return;
+    }
+    if (isSeller) {
+      toast.error("Sellers cannot buy their own items.");
+      return;
+    }
+    if (!isLive) {
+      toast.error("This item is no longer available.");
+      return;
+    }
+    if (!auction.buy_now_price) {
+      return;
+    }
+    if (walletBalance < auction.buy_now_price) {
+      toast.error("Insufficient wallet balance to Buy Now.");
+      return;
+    }
+
+    if (!confirm(`Are you sure you want to Buy Now for ₹${auction.buy_now_price.toLocaleString()}?`)) {
+      return;
+    }
+
+    setBuyingNow(true);
+    try {
+      const res = await buyNowAction(auction.id);
+      if (res?.success) {
+        toast.success("🎉 Purchase successful! The item is yours.");
+      }
+    } catch (err: any) {
+      toast.error(err.message || "Failed to complete purchase.");
+    } finally {
+      setBuyingNow(false);
     }
   }
 
@@ -176,6 +224,20 @@ export default function ProductBidPanel({ auction, amount, setAmount }: any) {
           </div>
         )}
 
+        {userId && (
+          <div className="flex justify-between items-center text-xs font-semibold text-muted-foreground px-1 pt-1">
+            <span>Your Balance: ₹{walletBalance.toLocaleString()}</span>
+            {walletBalance < amount && (
+              <div className="flex items-center gap-1.5">
+                <span className="text-destructive font-black animate-pulse">Insufficient Funds</span>
+                <Link href="/profile" className="text-primary hover:underline text-[11px] font-bold">
+                  Add Funds
+                </Link>
+              </div>
+            )}
+          </div>
+        )}
+
         <div className="flex items-center gap-4">
           <div className="flex items-center border border-border rounded-xl overflow-hidden bg-muted">
             <button
@@ -201,7 +263,7 @@ export default function ProductBidPanel({ auction, amount, setAmount }: any) {
 
           <button
             onClick={placeBid}
-            disabled={!isLive || loading || isSeller}
+            disabled={!isLive || loading || isSeller || walletBalance < amount}
             className="flex-1 bg-primary text-primary-foreground px-8 py-4 rounded-xl font-semibold text-sm uppercase tracking-widest hover:opacity-90 disabled:bg-muted disabled:cursor-not-allowed transition-all shadow-md active:scale-95 flex items-center justify-center gap-2"
           >
             {loading ? (
@@ -220,6 +282,26 @@ export default function ProductBidPanel({ auction, amount, setAmount }: any) {
             )}
           </button>
         </div>
+
+        {isLive && auction.buy_now_price && (
+          <button
+            onClick={handleBuyNow}
+            disabled={buyingNow || isSeller || (!!userId && walletBalance < auction.buy_now_price)}
+            className="w-full bg-orange-500 hover:bg-orange-600 text-white py-4.5 rounded-xl font-semibold text-sm uppercase tracking-widest transition-all shadow-md active:scale-95 flex items-center justify-center gap-2 cursor-pointer mt-1"
+          >
+            {buyingNow ? (
+              <>
+                <Loader2 className="w-4 h-4 animate-spin" />
+                PROCESSING...
+              </>
+            ) : (
+              <>
+                <ShoppingBag size={15} />
+                BUY NOW FOR ₹{Number(auction.buy_now_price).toLocaleString()}
+              </>
+            )}
+          </button>
+        )}
       </div>
     </div>
   );

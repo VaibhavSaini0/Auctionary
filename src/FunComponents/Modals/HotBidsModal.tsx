@@ -12,6 +12,7 @@ import {
 import { motion, Variants } from "framer-motion";
 import { useEffect, useState } from "react";
 import type { CarouselApi } from "@/components/ui/carousel";
+import { PICSUM } from "@/lib/constants/images";
 
 const slides = [
   {
@@ -136,7 +137,7 @@ export default function HotBidsModal() {
 
                       <div className="relative z-10 w-105 h-105 rounded-full overflow-hidden">
                         <Image
-                          src="https://images.unsplash.com/photo-1600180758890-6b94519a8ba6"
+                          src={PICSUM.featuredSculpture}
                           alt="Auction Item"
                           fill
                           className="object-cover"

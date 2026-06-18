@@ -41,7 +41,7 @@ export default function OrdersTab({ userId }: { userId: string }) {
     if (userId) fetchOrders();
   }, [userId]);
 
-  if (loading) return <div className="p-10 text-center animate-pulse text-gray-400">Loading your orders...</div>;
+  if (loading) return <div className="p-10 text-center animate-pulse text-muted-foreground">Loading your orders...</div>;
 
   return (
     <div className="space-y-4 pt-4">

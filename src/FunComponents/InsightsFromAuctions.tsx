@@ -3,6 +3,7 @@
 import Image from "next/image";
 import { ArrowUpRight } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { PICSUM } from "@/lib/constants/images";
 
 export default function InsightsFromAuctions() {
   return (
@@ -35,13 +36,13 @@ export default function InsightsFromAuctions() {
       {/* ARTICLES */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 sm:gap-10">
         <ArticleCard
-          image="https://images.unsplash.com/photo-1513364776144-60967b0f800f"
+          image={PICSUM.insight1}
           meta="Real State · October 3, 2024"
           title="Auction Avenue Your Roadmap to Winning Deals open."
         />
 
         <ArticleCard
-          image="https://images.unsplash.com/photo-1524758631624-e2822e304c36"
+          image={PICSUM.insight2}
           meta="Old Coin · October 8, 2024"
           title="Bidder’s Beat off Insights from the Auction Floor This."
         />
@@ -78,7 +79,7 @@ function ArticleCard({
         <div className="absolute inset-0 bg-gradient-to-t from-black/50 via-transparent to-transparent opacity-80 group-hover:opacity-90 transition-opacity" />
         
         {/* Category Badge over Image */}
-        <div className="absolute top-4 left-4 bg-primary/95 text-white text-[10px] font-black uppercase tracking-widest px-3 py-1.5 rounded-full shadow-md backdrop-blur-xs">
+        <div className="absolute top-4 left-4 bg-primary text-primary-foreground text-[10px] font-black uppercase tracking-widest px-3 py-1.5 rounded-full shadow-md backdrop-blur-xs">
           {category}
         </div>
       </div>

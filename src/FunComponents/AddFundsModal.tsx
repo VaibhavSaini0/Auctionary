@@ -113,7 +113,7 @@ export default function AddFundsModal() {
                     className={`px-4 py-2 rounded-full text-sm font-bold border transition ${
                       amount === amt
                         ? "bg-primary text-primary-foreground border-primary"
-                        : "border-border hover:bg-muted"
+                        : "border-border hover:bg-muted hover:text-foreground"
                     }`}
                   >
                     ₹{amt.toLocaleString()}

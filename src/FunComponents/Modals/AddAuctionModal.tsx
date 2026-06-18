@@ -15,6 +15,7 @@ export default function AddAuctionModal({ userId }: { userId: string }) {
   const router = useRouter();
 
   const [schedule, setSchedule] = useState(false);
+  const [enableBuyNow, setEnableBuyNow] = useState(false);
   const [imageFile, setImageFile] = useState<File | null>(null);
   const [previewUrl, setPreviewUrl] = useState<string | null>(null);
 
@@ -22,6 +23,7 @@ export default function AddAuctionModal({ userId }: { userId: string }) {
     title: "",
     description: "",
     starting_bid: "",
+    buy_now_price: "",
     start_date: "",
     end_date: "",
     category_id: 0,
@@ -73,6 +75,9 @@ export default function AddAuctionModal({ userId }: { userId: string }) {
         category: formData.category_id,
         starting_bid: Number(formData.starting_bid),
         current_bid: Number(formData.starting_bid),
+        buy_now_price: enableBuyNow && formData.buy_now_price
+          ? Number(formData.buy_now_price)
+          : null,
         status,
         starts_at: startTime,
         ends_at: new Date(formData.end_date).toISOString(),
@@ -95,12 +100,14 @@ export default function AddAuctionModal({ userId }: { userId: string }) {
 
   const resetForm = () => {
     setSchedule(false);
+    setEnableBuyNow(false);
     setImageFile(null);
     setPreviewUrl(null);
     setFormData({
       title: "",
       description: "",
       starting_bid: "",
+      buy_now_price: "",
       start_date: "",
       end_date: "",
       category_id: categories[0]?.id || 0,
@@ -119,7 +126,7 @@ export default function AddAuctionModal({ userId }: { userId: string }) {
 
       {open && (
         <div className="fixed inset-0 z-50 bg-black/60 backdrop-blur-sm flex items-center justify-center p-4 overflow-hidden">
-          <div className="bg-card text-card-foreground rounded-3xl shadow-2xl w-full max-w-lg overflow-y-auto max-h-[90vh] animate-in zoom-in duration-200">
+          <div className="bg-card text-card-foreground rounded-3xl shadow-2xl w-full max-w-lg overflow-y-auto max-h-[90vh] custom-scrollbar animate-in zoom-in duration-200">
             <div className="p-6 border-b border-border flex justify-between items-center sticky top-0 bg-card z-10">
               <h2 className="text-lg font-bold uppercase tracking-tight">
                 List New Product
@@ -170,11 +177,42 @@ export default function AddAuctionModal({ userId }: { userId: string }) {
                 <input
                   required
                   type="number"
+                  min="1"
                   placeholder="Starting price (₹)"
                   value={formData.starting_bid}
                   onChange={(e) => setFormData({ ...formData, starting_bid: e.target.value })}
                   className="w-full border border-input p-4 rounded-2xl bg-background focus:ring-2 focus:ring-primary/20 outline-none transition"
                 />
+
+                <label className="flex items-center gap-3 p-3 bg-muted/30 rounded-xl cursor-pointer">
+                  <input
+                    type="checkbox"
+                    className="w-5 h-5 rounded-md accent-primary"
+                    checked={enableBuyNow}
+                    onChange={(e) => setEnableBuyNow(e.target.checked)}
+                  />
+                  <span className="font-semibold text-sm">Enable Buy Now (instant purchase)</span>
+                </label>
+
+                {enableBuyNow && (
+                  <div className="space-y-1 animate-in fade-in slide-in-from-top-2">
+                    <label className="text-[10px] font-black uppercase text-muted-foreground ml-2 tracking-widest">
+                      Buy Now Price (₹)
+                    </label>
+                    <input
+                      required={enableBuyNow}
+                      type="number"
+                      min="1"
+                      placeholder="Instant buy price — must exceed starting bid"
+                      value={formData.buy_now_price}
+                      onChange={(e) => setFormData({ ...formData, buy_now_price: e.target.value })}
+                      className="w-full border border-input p-4 rounded-2xl bg-background focus:ring-2 focus:ring-primary/20 outline-none transition"
+                    />
+                    <p className="text-[11px] text-muted-foreground ml-2">
+                      Buyers can skip bidding and purchase immediately at this price.
+                    </p>
+                  </div>
+                )}
 
                 <label className="flex items-center gap-3 cursor-pointer border-2 border-dashed border-input p-4 rounded-2xl hover:bg-muted/50 transition">
                   <ImagePlus className="text-primary" />

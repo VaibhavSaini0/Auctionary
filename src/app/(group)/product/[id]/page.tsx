@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import { useParams } from "next/navigation";
 import { supabase } from "@/lib/supabase/client";
 import { useAuth } from "@clerk/nextjs";
+import { getAuctionByIdAction } from "@/app/actions/auctions";
 import ProductHeader from "@/FunComponents/product/ProductHeader";
 import ProductGallery from "@/FunComponents/product/ProductGallery";
 import ProductBidPanel from "@/FunComponents/product/ProductBidPanel";
@@ -37,19 +38,23 @@ export default function ProductDetailsPage() {
     if (!id) return;
 
     async function fetchAuction() {
-      const { data } = await supabase
-        .from("auction_items")
-        .select(
-          "id, title, image_url, starting_bid, current_bid, status, ends_at, bought_by, buy_now_price, description, seller_id"
-        )
-        .eq("id", id)
-        .single();
+      setLoading(true);
+      try {
+        // Server action bypasses RLS so public product pages always load
+        const data = await getAuctionByIdAction(id);
 
-      if (data) {
-        setAuction(data as AuctionItem);
-        setAmount((data.current_bid ?? data.starting_bid) + 10);
+        if (data) {
+          setAuction(data as AuctionItem);
+          setAmount((data.current_bid ?? data.starting_bid) + 10);
+        } else {
+          setAuction(null);
+        }
+      } catch (err) {
+        console.error("Failed to load auction:", err);
+        setAuction(null);
+      } finally {
+        setLoading(false);
       }
-      setLoading(false);
     }
 
     fetchAuction();
@@ -102,9 +107,9 @@ export default function ProductDetailsPage() {
     );
 
   return (
-    <section className="max-w-350 mx-auto px-6 py-16 bg-white">
+    <section className="max-w-350 mx-auto px-6 py-16 bg-background">
       {auction.bought_by && (
-        <div className="mb-6 rounded-xl bg-green-100 text-green-700 text-center py-4 font-black tracking-wide">
+        <div className="mb-6 rounded-xl bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 text-center py-4 font-black tracking-wide border border-emerald-500/20">
           🎉 ITEM SOLD
         </div>
       )}
@@ -117,7 +122,7 @@ export default function ProductDetailsPage() {
         </div>
 
         <div className="space-y-8">
-          <div className="rounded-2xl border bg-white p-6 shadow-sm">
+          <div className="rounded-2xl border border-border bg-card p-6 shadow-sm">
             <ProductBidPanel
               auction={auction}
               amount={amount}
@@ -125,13 +130,13 @@ export default function ProductDetailsPage() {
             />
           </div>
 
-          <div className="rounded-2xl border bg-gray-50/60 p-6">
+          <div className="rounded-2xl border border-border bg-muted/50 p-6">
             <AuctionSideTabs auctionId={auction.id as any} />
           </div>
         </div>
       </div>
 
-      <div className="mt-20 border-t border-gray-100" />
+      <div className="mt-20 border-t border-border" />
 
       <div className="mt-16">
         <ProductBottomTabs

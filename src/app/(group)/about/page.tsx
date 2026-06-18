@@ -1,6 +1,7 @@
 "use client";
 
 import Image from "next/image";
+import { PICSUM } from "@/lib/constants/images";
 import { CheckCircle2, ShieldCheck, Sparkles, TrendingUp, Quote, Users, Hammer, ArrowRight } from "lucide-react";
 import { motion } from "framer-motion";
 import TestimonialSection from "@/FunComponents/TestimonialSection";
@@ -27,7 +28,7 @@ export default function WhoWeAre() {
             <span className="inline-block text-xs font-black tracking-[0.25em] text-orange-500 uppercase mb-4">
               ✦ Discover Our Legacy
             </span>
-            <h2 className="text-4xl sm:text-5xl font-black mb-6 text-gray-900 tracking-tight leading-[1.15]">
+            <h2 className="text-4xl sm:text-5xl font-black mb-6 text-foreground tracking-tight leading-[1.15]">
               Who We{" "}
               <span className="italic font-serif font-light text-orange-500 relative">
                 Are
@@ -36,7 +37,7 @@ export default function WhoWeAre() {
             </h2>
 
             <p className="text-muted-foreground leading-relaxed mb-8 max-w-xl text-base sm:text-lg">
-              Welcome to <span className="font-semibold text-gray-900">Auctionary</span>, where the thrill of live bidding meets strategic transparency. We connect passionate collectors and eager buyers with rare, premium assets in a secure, digital auction house designed to make bidding simple, engaging, and premium.
+              Welcome to <span className="font-semibold text-foreground">Auctionary</span>, where the thrill of live bidding meets strategic transparency. We connect passionate collectors and eager buyers with rare, premium assets in a secure, digital auction house designed to make bidding simple, engaging, and premium.
             </p>
 
             <div className="space-y-4">
@@ -75,7 +76,7 @@ export default function WhoWeAre() {
               transition={{ duration: 0.4 }}
             >
               <Image
-                src="https://images.unsplash.com/photo-1518770660439-4636190af475"
+                src={PICSUM.aboutHero}
                 alt="Tech & Innovation"
                 fill
                 priority
@@ -86,14 +87,14 @@ export default function WhoWeAre() {
 
             {/* Secondary bottom/left floating image */}
             <motion.div
-              className="absolute bottom-4 left-4 w-[55%] sm:w-[50%] aspect-video rounded-[1.5rem] overflow-hidden shadow-2xl bg-white p-2 border border-gray-100/50"
+              className="absolute bottom-4 left-4 w-[55%] sm:w-[50%] aspect-video rounded-[1.5rem] overflow-hidden shadow-2xl bg-card p-2 border border-border"
               animate={{ y: [0, -10, 0] }}
               transition={{ duration: 6, repeat: Infinity, ease: "easeInOut" }}
               whileHover={{ scale: 1.05 }}
             >
               <div className="relative w-full h-full rounded-xl overflow-hidden group">
                 <Image
-                  src="https://images.unsplash.com/photo-1519389950473-47ba0277781c"
+                  src={PICSUM.aboutWorkspace}
                   alt="Modern Workspace"
                   fill
                   className="object-cover transition-transform duration-700 group-hover:scale-105"
@@ -104,7 +105,7 @@ export default function WhoWeAre() {
 
             {/* Floating Live Bidder Badge */}
             <motion.div
-              className="absolute top-1/2 -left-4 bg-white/90 backdrop-blur-md rounded-2xl px-5 py-4 shadow-lg border border-gray-100 flex items-center gap-3 cursor-default"
+              className="absolute top-1/2 -left-4 bg-card/95 backdrop-blur-md rounded-2xl px-5 py-4 shadow-lg border border-border flex items-center gap-3 cursor-default"
               animate={{ y: [0, 8, 0] }}
               transition={{ duration: 5, repeat: Infinity, ease: "easeInOut", delay: 1 }}
               whileHover={{ scale: 1.05, y: -4 }}
@@ -115,7 +116,7 @@ export default function WhoWeAre() {
                 <span className="absolute -top-0.5 -right-0.5 w-3 h-3 bg-emerald-500 rounded-full border-2 border-white" />
               </div>
               <div>
-                <p className="text-xl font-black text-gray-900 leading-none">
+                <p className="text-xl font-black text-foreground leading-none">
                   5.6k
                 </p>
                 <p className="text-[9px] uppercase tracking-widest font-black text-muted-foreground mt-0.5">
@@ -138,7 +139,7 @@ export default function WhoWeAre() {
             whileHover={{ scale: 1.01 }}
           >
             <Image
-              src="https://images.unsplash.com/photo-1594731804071-48f479cbe508?auto=format&fit=crop&w=800"
+              src={PICSUM.aboutShowroom}
               alt="Premium Auction Showroom"
               fill
               className="object-cover transition-transform duration-700 group-hover:scale-105"
@@ -166,7 +167,7 @@ export default function WhoWeAre() {
             <span className="inline-block text-xs font-black tracking-[0.25em] text-orange-500 uppercase mb-4">
               ✦ Seamless System Ecosystem
             </span>
-            <h2 className="text-4xl sm:text-5xl font-black mb-6 text-gray-900 tracking-tight leading-[1.15]">
+            <h2 className="text-4xl sm:text-5xl font-black mb-6 text-foreground tracking-tight leading-[1.15]">
               Get In{" "}
               <span className="italic font-serif font-light text-orange-500 relative">
                 Know
@@ -188,7 +189,7 @@ export default function WhoWeAre() {
               ].map((item, index) => (
                 <motion.div
                   key={item}
-                  className="flex items-center gap-3 bg-gray-50/50 hover:bg-orange-50/30 p-3.5 rounded-xl border border-gray-100 transition-all duration-300 group"
+                  className="flex items-center gap-3 bg-muted/50 hover:bg-primary/10 p-3.5 rounded-xl border border-border transition-all duration-300 group"
                   whileHover={{ x: 5, borderColor: "rgb(254, 215, 170)" }}
                   initial={{ opacity: 0, y: 10 }}
                   whileInView={{ opacity: 1, y: 0 }}
@@ -196,7 +197,7 @@ export default function WhoWeAre() {
                   transition={{ delay: index * 0.08 }}
                 >
                   <CheckCircle2 className="text-orange-500 w-5 h-5 shrink-0 transition-transform group-hover:scale-110" />
-                  <p className="text-sm font-semibold text-gray-700 leading-tight">{item}</p>
+                  <p className="text-sm font-semibold text-muted-foreground leading-tight">{item}</p>
                 </motion.div>
               ))}
             </div>
@@ -233,7 +234,7 @@ export default function WhoWeAre() {
 
           <div className="w-16 h-16 sm:w-20 sm:h-20 rounded-full overflow-hidden shrink-0 border-2 border-orange-500/20 relative shadow-md">
             <Image
-              src="https://images.unsplash.com/photo-1508685096489-7aac296839c6?auto=format&fit=crop&w=150"
+              src={PICSUM.aboutTeam}
               alt="Leslie Alexander"
               fill
               className="object-cover"
@@ -241,14 +242,14 @@ export default function WhoWeAre() {
           </div>
 
           <div className="relative z-10 text-center md:text-left flex-1">
-            <p className="italic text-gray-700 text-lg sm:text-xl font-medium leading-relaxed mb-4">
+            <p className="italic text-muted-foreground text-lg sm:text-xl font-medium leading-relaxed mb-4">
               “I work with Auctionary on many bids and consignment projects. They always exceed my expectations with their platform speed, secure escrow guarantees, and stellar customer service.”
             </p>
             <div className="flex flex-col sm:flex-row sm:items-center justify-center md:justify-start gap-2">
-              <p className="font-extrabold text-gray-900 text-base">
+              <p className="font-extrabold text-foreground text-base">
                 Leslie Alexander
               </p>
-              <span className="hidden sm:inline text-gray-400">•</span>
+              <span className="hidden sm:inline text-muted-foreground">•</span>
               <p className="text-xs text-muted-foreground uppercase tracking-widest font-black">
                 Verified Collector
               </p>
@@ -268,14 +269,14 @@ export default function WhoWeAre() {
 function Feature({ icon, title, text }: { icon: React.ReactNode; title: string; text: string }) {
   return (
     <motion.div
-      className="flex gap-4 p-4 rounded-2xl hover:bg-gray-50 border border-transparent hover:border-gray-100 transition-all duration-300 cursor-default group"
+      className="flex gap-4 p-4 rounded-2xl hover:bg-muted/50 border border-transparent hover:border-border transition-all duration-300 cursor-default group"
       whileHover={{ x: 6 }}
     >
       <div className="w-12 h-12 rounded-xl bg-orange-50 border border-orange-100/50 flex items-center justify-center shrink-0 shadow-sm transition-colors duration-300 group-hover:bg-orange-500 group-hover:border-orange-500 *:text-orange-500 group-hover:*:text-white">
         {icon}
       </div>
       <div>
-        <h4 className="font-bold mb-1 text-gray-900 text-base">
+        <h4 className="font-bold mb-1 text-foreground text-base">
           {title}
         </h4>
         <p className="text-sm text-muted-foreground leading-relaxed">
@@ -289,7 +290,7 @@ function Feature({ icon, title, text }: { icon: React.ReactNode; title: string; 
 function Stat({ value, label, icon }: { value: string; label: string; icon: React.ReactNode }) {
   return (
     <motion.div
-      className="bg-white p-4 sm:p-5 rounded-2xl border border-gray-100 shadow-sm flex flex-col justify-between group relative overflow-hidden"
+      className="bg-card p-4 sm:p-5 rounded-2xl border border-border shadow-sm flex flex-col justify-between group relative overflow-hidden"
       whileHover={{ y: -6, scale: 1.02, borderColor: "rgb(251, 146, 60)" }}
       transition={{ type: "spring", stiffness: 200, damping: 15 }}
     >
@@ -298,7 +299,7 @@ function Stat({ value, label, icon }: { value: string; label: string; icon: Reac
         {icon}
       </div>
       <div>
-        <p className="text-xl sm:text-2xl font-black text-gray-900 group-hover:text-orange-500 transition-colors leading-none">
+        <p className="text-xl sm:text-2xl font-black text-foreground group-hover:text-orange-500 transition-colors leading-none">
           {value}
         </p>
         <p className="text-[10px] font-bold uppercase tracking-wider text-muted-foreground mt-1.5 leading-none">

@@ -1,4 +1,4 @@
-import { currentUser } from "@clerk/nextjs/server";
+import { auth, clerkClient } from "@clerk/nextjs/server";
 import { createClient } from "@supabase/supabase-js";
 import ProfileTabs from "@/FunComponents/ProfileTabs";
 import { redirect } from "next/navigation";
@@ -8,14 +8,18 @@ import { Suspense } from "react";
 import AddFundsModal from "@/FunComponents/AddFundsModal";
 import OrdersTab from "@/FunComponents/profile/OrderTab";
 import StoreSettingTab from "@/FunComponents/profile/SellerSettingTab";
+import ProfileAuctionButton from "@/FunComponents/profile/ProfileAuctionButton";
 import { Wallet, Gavel, Coins, ShieldCheck, User } from "lucide-react";
 
 export default async function ProfilePage() {
-  const user = await currentUser();
+  const { userId } = await auth();
 
-  if (!user) {
-    redirect("/");
+  if (!userId) {
+    redirect("/sign-in");
   }
+
+  const client = await clerkClient();
+  const user = await client.users.getUser(userId);
 
   const isSeller = user.publicMetadata?.role === "seller";
   const supabase = createClient(
@@ -58,7 +62,7 @@ export default async function ProfilePage() {
           <div className="flex-1 text-center sm:text-left min-w-0">
             <div className="flex flex-col sm:flex-row sm:items-center gap-2 justify-center sm:justify-start">
               <h1 className="text-2xl sm:text-3xl font-black tracking-tight text-foreground truncate">
-                {user.fullName}
+                {user.fullName || [user.firstName, user.lastName].filter(Boolean).join(" ") || "User"}
               </h1>
               {isSeller ? (
                 <span className="w-fit mx-auto sm:mx-0 flex items-center gap-1.5 px-3 py-1 bg-orange-500/10 text-orange-500 border border-orange-500/20 rounded-full text-xs font-black uppercase tracking-wider">
@@ -79,6 +83,12 @@ export default async function ProfilePage() {
               <ShieldCheck size={14} className="text-primary" />
               Member ID: <span className="font-mono text-foreground/80">{user.id.slice(0, 12)}...</span>
             </p>
+
+            {isSeller && (
+              <div className="mt-5 flex justify-center sm:justify-start">
+                <ProfileAuctionButton isSeller={isSeller} userId={user.id} />
+              </div>
+            )}
           </div>
         </div>
 

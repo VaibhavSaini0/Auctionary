@@ -31,10 +31,10 @@ import {
   Moon
 } from "lucide-react";
 import { motion, AnimatePresence, Variants } from "framer-motion";
-import { SignInButton, useClerk, useUser, useAuth } from "@clerk/nextjs";
-import { supabase, createClerkSupabaseClient } from "@/lib/supabase/client";
+import { useClerk, useUser } from "@clerk/nextjs";
 import { useEffect, useState } from "react";
 import { useTheme } from "next-themes";
+import { syncClerkProfileToDatabase } from "@/app/actions/profile";
 import NotificationBell from "./Notification";
 import HeaderSearch from "./HeaderSearch";
 
@@ -97,7 +97,6 @@ export default function Header() {
   const [open, setOpen] = useState(false);
   const { signOut } = useClerk();
   const { isLoaded, isSignedIn, user } = useUser();
-  const { getToken } = useAuth();
   const pathname = usePathname();
   const { theme, setTheme } = useTheme();
   const [mounted, setMounted] = useState(false);
@@ -107,25 +106,48 @@ export default function Header() {
   }, []);
 
   useEffect(() => {
-    if (isLoaded && isSignedIn && user) {
-      const syncProfile = async () => {
-        try {
-          const token = await getToken({ template: "supabase" });
-          if (!token) return;
-          const authenticatedSupabase = createClerkSupabaseClient(token);
-          await authenticatedSupabase.from("profiles").upsert({
-            id: user.id,
-            full_name: user.fullName,
-            email: user.primaryEmailAddress?.emailAddress,
-            avatar_url: user.imageUrl,
-          });
-        } catch (err) {
+    if (!isLoaded || !isSignedIn || !user?.id) return;
+
+    let cancelled = false;
+
+    const syncProfile = async (attempt = 0) => {
+      try {
+        const result = await syncClerkProfileToDatabase(user.id, {
+          full_name: user.fullName,
+          email: user.primaryEmailAddress?.emailAddress,
+          avatar_url: user.imageUrl,
+        });
+
+        if (
+          !cancelled &&
+          !result.success &&
+          result.reason === "not_authenticated" &&
+          attempt < 4
+        ) {
+          window.setTimeout(() => syncProfile(attempt + 1), 400 * (attempt + 1));
+        }
+      } catch (err) {
+        if (!cancelled && attempt < 4) {
+          window.setTimeout(() => syncProfile(attempt + 1), 400 * (attempt + 1));
+        } else if (!cancelled) {
           console.error("Error syncing profile to Supabase:", err);
         }
-      };
-      syncProfile();
-    }
-  }, [isLoaded, isSignedIn, user, getToken]);
+      }
+    };
+
+    syncProfile();
+
+    return () => {
+      cancelled = true;
+    };
+  }, [
+    isLoaded,
+    isSignedIn,
+    user?.id,
+    user?.fullName,
+    user?.imageUrl,
+    user?.primaryEmailAddress?.emailAddress,
+  ]);
 
   return (
     <header className="sticky top-0 z-50 border-b border-border/80 bg-background/95 backdrop-blur-md supports-[backdrop-filter]:bg-background/80 shadow-sm transition-all duration-300">
@@ -227,11 +249,11 @@ export default function Header() {
             </Button>
 
             {!isSignedIn ? (
-              <SignInButton mode="modal">
+              <Link href="/sign-in">
                 <Button className="hidden md:flex rounded-full bg-primary hover:bg-primary/95 text-primary-foreground font-bold transition-all hover:scale-[1.02] active:scale-95 shadow-md shadow-primary/20 cursor-pointer pl-4 pr-5 py-2.5">
                   <User size={16} className="mr-1.5 shrink-0" /> My Account
                 </Button>
-              </SignInButton>
+              </Link>
             ) : (
               <DropdownMenu>
                 <DropdownMenuTrigger asChild>
@@ -454,14 +476,13 @@ export default function Header() {
                 </div>
               ) : (
                 <div className="border-t border-border/50 pt-4 shrink-0">
-                  <SignInButton mode="modal">
-                    <Button 
+                  <Link href="/sign-in" onClick={() => setOpen(false)}>
+                    <Button
                       className="w-full rounded-xl bg-primary hover:bg-primary/95 text-primary-foreground font-bold py-3 flex items-center justify-center gap-2 cursor-pointer shadow-md shadow-primary/20"
-                      onClick={() => setOpen(false)}
                     >
                       <User size={16} className="shrink-0" /> My Account
                     </Button>
-                  </SignInButton>
+                  </Link>
                 </div>
               )}
             </motion.aside>

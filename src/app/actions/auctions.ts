@@ -15,6 +15,11 @@ const createAuctionSchema = z.object({
   title: z.string().min(1, "Title is required"),
   description: z.string().optional().nullable(),
   starting_bid: z.coerce.number().positive("Starting bid must be a positive number"),
+  buy_now_price: z
+    .number()
+    .positive("Buy Now price must be a positive number")
+    .nullable()
+    .optional(),
   starts_at: z.string().refine((val) => !isNaN(Date.parse(val)), "Invalid start date"),
   ends_at: z.string().refine((val) => !isNaN(Date.parse(val)), "Invalid end date"),
   category: z.coerce.number().int().positive("Category is required"),
@@ -45,6 +50,10 @@ export async function createAuctionAction(data: any) {
       title: data.title,
       description: data.description,
       starting_bid: data.starting_bid,
+      buy_now_price:
+        data.buy_now_price != null && data.buy_now_price !== ""
+          ? Number(data.buy_now_price)
+          : null,
       starts_at: data.starts_at,
       ends_at: data.ends_at,
       category: data.category,
@@ -62,13 +71,21 @@ export async function createAuctionAction(data: any) {
       throw new Error("End date must be in the future.");
     }
 
+    if (
+      parsedData.buy_now_price != null &&
+      parsedData.buy_now_price <= parsedData.starting_bid
+    ) {
+      throw new Error("Buy Now price must be higher than the starting bid.");
+    }
+
     const calculatedStatus = startsAtDate > now ? "Scheduled" : "Live";
 
     const { error } = await supabase.from("auction_items").insert({
       title: parsedData.title,
       description: parsedData.description,
       starting_bid: parsedData.starting_bid,
-      current_bid: parsedData.starting_bid, // Initial current bid is the starting bid
+      current_bid: parsedData.starting_bid,
+      buy_now_price: parsedData.buy_now_price ?? null,
       status: calculatedStatus,
       starts_at: parsedData.starts_at,
       ends_at: parsedData.ends_at,
@@ -88,6 +105,25 @@ export async function createAuctionAction(data: any) {
     console.error("CREATE AUCTION ERROR:", err.message);
     throw new Error(err.message || "Failed to create auction");
   }
+}
+
+export async function getAuctionByIdAction(id: string) {
+  if (!id) return null;
+
+  const { data, error } = await supabase
+    .from("auction_items")
+    .select(
+      "id, title, image_url, starting_bid, current_bid, status, ends_at, bought_by, buy_now_price, description, seller_id"
+    )
+    .eq("id", id)
+    .single();
+
+  if (error) {
+    console.error("GET AUCTION ERROR:", error.message);
+    return null;
+  }
+
+  return data;
 }
 
 export async function buyNowAction(auctionId: string) {

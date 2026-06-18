@@ -127,14 +127,14 @@ export default function TestimonialSection() {
           <div className="flex gap-4 mt-6">
             <button
               onClick={() => paginate(-1)}
-              className="w-11 h-11 rounded-full border border-border flex items-center justify-center bg-card hover:bg-primary hover:text-white hover:border-primary transition-all duration-300 shadow-sm hover:scale-105 active:scale-95 cursor-pointer"
+              className="w-11 h-11 rounded-full border border-border flex items-center justify-center bg-card hover:bg-primary hover:text-primary-foreground hover:border-primary transition-all duration-300 shadow-sm hover:scale-105 active:scale-95 cursor-pointer"
               aria-label="Previous testimonial"
             >
               <ChevronLeft size={20} />
             </button>
             <button
               onClick={() => paginate(1)}
-              className="w-11 h-11 rounded-full border border-border flex items-center justify-center bg-card hover:bg-primary hover:text-white hover:border-primary transition-all duration-300 shadow-sm hover:scale-105 active:scale-95 cursor-pointer"
+              className="w-11 h-11 rounded-full border border-border flex items-center justify-center bg-card hover:bg-primary hover:text-primary-foreground hover:border-primary transition-all duration-300 shadow-sm hover:scale-105 active:scale-95 cursor-pointer"
               aria-label="Next testimonial"
             >
               <ChevronRight size={20} />

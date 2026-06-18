@@ -12,6 +12,7 @@ import {
 import { motion, Variants } from "framer-motion";
 import { useEffect, useState } from "react";
 import type { CarouselApi } from "@/components/ui/carousel";
+import { PICSUM } from "@/lib/constants/images";
 
 const slides = [
   {
@@ -131,10 +132,11 @@ export default function FeaturedAuctionCarousel() {
                         style={{ backgroundColor: slide.accent }}
                       />
                       <Image
-                        src="https://images.unsplash.com/photo-1600180758890-6b94519a8ba6"
+                        src={PICSUM.featuredSculpture}
                         alt="Antique Sculpture"
                         width={420}
                         height={420}
+                        sizes="420px"
                         className="relative z-10"
                       />
                     </motion.div>

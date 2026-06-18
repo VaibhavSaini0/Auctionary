@@ -13,7 +13,7 @@ import { supabase } from "@/lib/supabase/client";
 import Image from "next/image";
 
 export default function BidsAccordionList({ auctions: initialAuctions }: any) {
-  const [expandedId, setExpandedId] = useState<number | null>(null);
+  const [expandedId, setExpandedId] = useState<string | null>(null);
   const [liveAuctions, setLiveAuctions] = useState(initialAuctions);
 
   useEffect(() => {
@@ -85,7 +85,7 @@ export default function BidsAccordionList({ auctions: initialAuctions }: any) {
     };
   }, [initialAuctions]);
 
-  const toggle = (id: number) =>
+  const toggle = (id: string) =>
     setExpandedId(expandedId === id ? null : id);
 
   return (
@@ -94,7 +94,7 @@ export default function BidsAccordionList({ auctions: initialAuctions }: any) {
         const myHighestBid = Math.max(...bids.map((b: any) => b.amount));
         const isLeading =
           myHighestBid >= (auction.current_bid || 0);
-        const isLive = auction.status === "Live";
+        const isLive = auction.status?.toLowerCase() === "live";
 
         return (
           <div

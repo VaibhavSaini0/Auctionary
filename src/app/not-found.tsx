@@ -10,7 +10,7 @@ export default function NotFound() {
         {/* Big 404 */}
         <h1 className="text-7xl font-extrabold text-primary mb-4">404</h1>
 
-        <h2 className="text-2xl font-semibold text-gray-900 mb-3">
+        <h2 className="text-2xl font-semibold text-foreground mb-3">
           Page Not Found
         </h2>
 

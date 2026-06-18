@@ -21,7 +21,7 @@ export default function ProductBidPanel({ auction, amount, setAmount }: any) {
 
   const isSold = !!auction.bought_by;
   const isSeller = userId === auction.seller_id;
-  const isLive = auction.status === "Live" && !isExpired && !isSold;
+  const isLive = auction.status?.toLowerCase() === "live" && !isExpired && !isSold;
 
   const calculateTimeLeft = useCallback(() => {
     if (!auction.ends_at) return;
@@ -35,7 +35,7 @@ export default function ProductBidPanel({ auction, amount, setAmount }: any) {
     const now = new Date().getTime();
     const difference = target - now;
 
-    if (difference <= 0 || isSold || auction.status === "Ended") {
+    if (difference <= 0 || isSold || auction.status?.toLowerCase() === "ended") {
       setTimeLeft(isSold ? "Item Sold" : "Auction Ended");
       setIsExpired(true);
       return;
@@ -161,7 +161,7 @@ export default function ProductBidPanel({ auction, amount, setAmount }: any) {
               auction.status === "Live" ? "bg-black" : "bg-black"
             }`}
           />
-          {isSold ? "SOLD" : isExpired ? "ENDED" :auction.status.toUpperCase()}
+          {isSold ? "SOLD" : isExpired ? "ENDED" : (auction.status ?? "UNKNOWN").toUpperCase()}
         </div>
 
         {isSeller && (

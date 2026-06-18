@@ -80,9 +80,9 @@
   --muted: oklch(0.96 0.006 250);
   --muted-foreground: oklch(0.55 0.03 260);
 
-  /* 10% Accent (Success / Status) */
-  --accent: oklch(97.473% 0.00854 225.62);
-  --accent-foreground: oklch(0.98 0.01 145);
+  /* 10% Accent (hover surfaces) */
+  --accent: oklch(0.95 0.015 255);
+  --accent-foreground: oklch(0.22 0.02 265);
 
   /* Destructive */
   --destructive: oklch(0.62 0.22 27);
@@ -151,9 +151,45 @@
   * {
     @apply border-border outline-ring/50;
   }
+  html {
+    scrollbar-width: thin;
+    scrollbar-color: color-mix(in oklch, var(--primary) 65%, transparent) var(--muted);
+  }
   body {
     @apply bg-background text-foreground;
   }
+}
+
+/* ================================
+   CUSTOM SCROLLBAR (Project-wide)
+================================ */
+*::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+*::-webkit-scrollbar-track {
+  background: var(--muted);
+  border-radius: 999px;
+}
+
+*::-webkit-scrollbar-thumb {
+  background: color-mix(in oklch, var(--primary) 65%, transparent);
+  border-radius: 999px;
+  border: 2px solid var(--muted);
+}
+
+*::-webkit-scrollbar-thumb:hover {
+  background: var(--primary);
+}
+
+*::-webkit-scrollbar-corner {
+  background: var(--muted);
+}
+
+.custom-scrollbar {
+  scrollbar-width: thin;
+  scrollbar-color: color-mix(in oklch, var(--primary) 65%, transparent) var(--muted);
 }
 
 /* ================================
@@ -172,4 +208,16 @@
 
 .profile-menu-item:hover {
   @apply bg-primary/10 text-foreground;
+}
+
+.dark .profile-menu-item:hover {
+  @apply bg-primary/15 text-foreground;
+}
+
+/* Consistent primary hover — text always contrasts with primary bg */
+.theme-hover-primary {
+  @apply transition-colors duration-200;
+}
+.theme-hover-primary:hover {
+  @apply bg-primary text-primary-foreground border-primary;
 }

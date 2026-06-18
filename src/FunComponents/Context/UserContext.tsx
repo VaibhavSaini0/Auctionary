@@ -42,7 +42,6 @@ export const UserProvider = ({ children }: { children: React.ReactNode }) => {
         setProfile(null);
       } else {
         setProfile(data);
-        console.log(data)
       }
     } catch (err) {
       console.error("Critical error fetching profile:", err);

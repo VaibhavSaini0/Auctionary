@@ -289,7 +289,7 @@ export default function CreateBlogPage() {
           <button
             type="submit"
             disabled={loading}
-            className="w-full py-4 rounded-2xl bg-foreground text-background font-bold flex items-center justify-center gap-2 hover:bg-primary hover:text-white transition-all shadow-md active:scale-[0.98] disabled:opacity-50 disabled:pointer-events-none cursor-pointer text-sm uppercase tracking-wider"
+            className="w-full py-4 rounded-2xl bg-foreground text-background font-bold flex items-center justify-center gap-2 hover:bg-primary hover:text-primary-foreground transition-all shadow-md active:scale-[0.98] disabled:opacity-50 disabled:pointer-events-none cursor-pointer text-sm uppercase tracking-wider"
           >
             {loading ? (
               <>

@@ -10,7 +10,7 @@ import Link from "next/link";
 import { motion, AnimatePresence } from "framer-motion";
 
 export type SearchSuggestion = {
-  id: number;
+  id: string;
   title: string;
   image_url: string;
   starting_bid: number;

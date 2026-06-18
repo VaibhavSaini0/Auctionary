@@ -49,7 +49,12 @@ export default function AuctionsList({
 
         if (fetchError) throw fetchError;
 
-        const auctionItems = Array.isArray(data) ? data : data?.items ?? [];
+        const auctionItems = (Array.isArray(data) ? data : data?.items ?? []).map(
+          (item: AuctionItem & { auction_id?: string }) => ({
+            ...item,
+            id: String(item.id ?? item.auction_id ?? ""),
+          })
+        ).filter((item: AuctionItem) => item.id);
         const total = data?.totalPages ?? 1;
         setItems(auctionItems);
         setTotalPages(total);
@@ -91,7 +96,7 @@ export default function AuctionsList({
           ))
         ) : (
           <div className="col-span-full py-20 text-center">
-            <p className="text-gray-400 font-bold uppercase tracking-widest text-sm">No auctions found matching your criteria.</p>
+            <p className="text-muted-foreground font-bold uppercase tracking-widest text-sm">No auctions found matching your criteria.</p>
           </div>
         )}
       </div>

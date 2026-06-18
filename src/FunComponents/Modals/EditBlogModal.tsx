@@ -105,39 +105,39 @@ export default function EditBlogModal({ blog, isOpen, onClose, onSuccess }: Edit
 
   return (
     <div className="fixed inset-0 z-[100] flex items-center justify-center bg-black/50 backdrop-blur-sm p-4">
-      <div className="bg-white rounded-[2.5rem] w-full max-w-4xl max-h-[90vh] overflow-y-auto relative animate-in zoom-in duration-300">
+      <div className="bg-card border border-border rounded-[2.5rem] w-full max-w-4xl max-h-[90vh] overflow-y-auto relative animate-in zoom-in duration-300 shadow-2xl">
         
         <button 
           onClick={onClose}
-          className="absolute top-6 right-6 p-2 hover:bg-gray-100 rounded-full transition"
+          className="absolute top-6 right-6 p-2 hover:bg-muted rounded-full transition-colors text-muted-foreground hover:text-foreground"
         >
-          <X size={24} className="text-gray-400" />
+          <X size={24} />
         </button>
 
         <div className="p-10">
           <div className="mb-8">
-            <h1 className="text-3xl font-extrabold mb-1 text-gray-900">Edit Blog Post</h1>
-            <p className="text-gray-500 text-sm">Update your story details and save changes.</p>
+            <h1 className="text-3xl font-extrabold mb-1 text-foreground">Edit Blog Post</h1>
+            <p className="text-muted-foreground text-sm">Update your story details and save changes.</p>
           </div>
 
           <form onSubmit={handleSubmit} className="space-y-6">
             <div>
-              <label className="block text-xs font-black uppercase tracking-widest text-gray-400 mb-2 ml-1">Title</label>
+              <label className="block text-xs font-black uppercase tracking-widest text-muted-foreground mb-2 ml-1">Title</label>
               <input
                 required
                 value={formData.title}
-                className="w-full p-4 rounded-2xl bg-gray-50 border focus:ring-2 focus:ring-orange-400 outline-none font-bold"
+                className="w-full p-4 rounded-2xl bg-muted border border-border text-foreground focus:ring-2 focus:ring-primary/40 outline-none font-bold"
                 onChange={(e) => setFormData({ ...formData, title: e.target.value })}
               />
             </div>
 
             <div className="grid md:grid-cols-2 gap-6">
               <div>
-                <label className="block text-xs font-black uppercase tracking-widest text-gray-400 mb-2 ml-1">Category</label>
+                <label className="block text-xs font-black uppercase tracking-widest text-muted-foreground mb-2 ml-1">Category</label>
                 <select
                   value={formData.category}
                   onChange={(e) => setFormData({ ...formData, category: e.target.value })}
-                  className="w-full p-4 bg-gray-50 rounded-2xl border font-bold"
+                  className="w-full p-4 bg-muted rounded-2xl border border-border text-foreground font-bold"
                 >
                   {categories.map((cat) => (
                     <option key={cat.id} value={cat.name}>{cat.name}</option>
@@ -146,10 +146,10 @@ export default function EditBlogModal({ blog, isOpen, onClose, onSuccess }: Edit
               </div>
 
               <div>
-                <label className="block text-xs font-black uppercase tracking-widest text-gray-400 mb-2 ml-1">Thumbnail</label>
-                <label className="flex items-center justify-center gap-2 p-4 border rounded-2xl cursor-pointer hover:bg-gray-50 transition border-dashed">
-                  <UploadCloud size={18} className="text-orange-500" />
-                  <span className="text-sm font-bold text-gray-600">
+                <label className="block text-xs font-black uppercase tracking-widest text-muted-foreground mb-2 ml-1">Thumbnail</label>
+                <label className="flex items-center justify-center gap-2 p-4 border border-dashed border-border rounded-2xl cursor-pointer hover:bg-muted/60 transition-colors text-foreground">
+                  <UploadCloud size={18} className="text-primary" />
+                  <span className="text-sm font-bold text-muted-foreground">
                     {imageFile ? imageFile.name : "Change image (Optional)"}
                   </span>
                   <input
@@ -162,21 +162,21 @@ export default function EditBlogModal({ blog, isOpen, onClose, onSuccess }: Edit
             </div>
 
             <div>
-              <label className="block text-xs font-black uppercase tracking-widest text-gray-400 mb-2 ml-1">Short Description</label>
+              <label className="block text-xs font-black uppercase tracking-widest text-muted-foreground mb-2 ml-1">Short Description</label>
               <textarea
                 rows={2}
                 value={formData.excerpt}
-                className="w-full p-4 rounded-2xl bg-gray-50 border resize-none font-medium"
+                className="w-full p-4 rounded-2xl bg-muted border border-border text-foreground resize-none font-medium"
                 onChange={(e) => setFormData({ ...formData, excerpt: e.target.value })}
               />
             </div>
 
             <div>
-              <label className="block text-xs font-black uppercase tracking-widest text-gray-400 mb-2 ml-1">Full Content</label>
+              <label className="block text-xs font-black uppercase tracking-widest text-muted-foreground mb-2 ml-1">Full Content</label>
               <textarea
                 rows={6}
                 value={formData.content}
-                className="w-full p-4 rounded-2xl bg-gray-50 border resize-none leading-relaxed font-medium"
+                className="w-full p-4 rounded-2xl bg-muted border border-border text-foreground resize-none leading-relaxed font-medium"
                 onChange={(e) => setFormData({ ...formData, content: e.target.value })}
               />
             </div>
@@ -185,13 +185,13 @@ export default function EditBlogModal({ blog, isOpen, onClose, onSuccess }: Edit
               <button
                 type="button"
                 onClick={onClose}
-                className="flex-1 py-4 rounded-2xl bg-gray-100 text-gray-600 font-bold hover:bg-gray-200 transition"
+                className="flex-1 py-4 rounded-2xl bg-muted text-foreground font-bold hover:bg-muted/80 transition-colors"
               >
                 Cancel
               </button>
               <button
                 disabled={loading}
-                className="flex-[2] py-4 rounded-2xl bg-gray-900 text-white font-bold flex items-center justify-center gap-2 hover:bg-orange-500 transition disabled:opacity-50"
+                className="flex-[2] py-4 rounded-2xl bg-primary text-primary-foreground font-bold flex items-center justify-center gap-2 hover:bg-primary/90 transition-colors disabled:opacity-50"
               >
                 {loading ? <Loader2 className="animate-spin" /> : <Save size={18} />}
                 Save Changes

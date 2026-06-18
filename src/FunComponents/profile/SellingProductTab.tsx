@@ -10,6 +10,7 @@ interface AuctionItem {
   title: string;
   current_bid: number;
   starting_bid: number;
+  buy_now_price?: number | null;
   status: string;
   image_url?: string;
 }
@@ -49,6 +50,11 @@ export default function SellingProductTab({
           <p className="text-xs text-muted-foreground max-w-xs leading-normal">
             You haven&rsquo;t listed any items for auction yet. Start listing to get bidders!
           </p>
+          {isSeller && (
+            <div className="mt-2">
+              <AddAuctionModal userId={userId} />
+            </div>
+          )}
         </div>
       ) : (
         <div className="space-y-3.5">
@@ -76,6 +82,12 @@ export default function SellingProductTab({
                   </h4>
                   <p className="text-xs text-muted-foreground mt-1 font-medium">
                     Current Bid: <span className="font-semibold text-foreground">₹{(item.current_bid ?? item.starting_bid).toLocaleString()}</span>
+                    {item.buy_now_price ? (
+                      <>
+                        {" · "}
+                        Buy Now: <span className="font-semibold text-emerald-600 dark:text-emerald-400">₹{Number(item.buy_now_price).toLocaleString()}</span>
+                      </>
+                    ) : null}
                   </p>
                 </div>
               </div>

@@ -5,66 +5,68 @@ import { ChevronLeft, ChevronRight, Paintbrush, CircleDollarSign, Sofa, Music, G
 import { useRef } from "react";
 import { motion } from "framer-motion";
 
+import { PICSUM } from "@/lib/constants/images";
+
 const categories = [
   {
     title: "Ceramics",
     icon: <Paintbrush className="w-6 h-6 text-primary" />,
     items: "4 Items",
-    img: "https://images.unsplash.com/photo-1582582494700-9c6c3f4fcd0d",
+    img: PICSUM.ceramics,
   },
   {
     title: "Coins",
     icon: <CircleDollarSign className="w-6 h-6 text-primary" />,
     items: "2 Items",
-    img: "https://images.unsplash.com/photo-1610374781660-6c6c44d0f27f",
+    img: PICSUM.coins,
   },
   {
     title: "Furniture",
     icon: <Sofa className="w-6 h-6 text-primary" />,
     items: "8 Items",
-    img: "https://images.unsplash.com/photo-1549187774-b4e9b0445b41",
+    img: PICSUM.furniture,
   },
   {
     title: "Instruments",
     icon: <Music className="w-6 h-6 text-primary" />,
     items: "8 Items",
-    img: "https://images.unsplash.com/photo-1519682577862-22b62b24e493",
+    img: PICSUM.instruments,
   },
   {
     title: "Jewelry",
     icon: <Gem className="w-6 h-6 text-primary" />,
     items: "3 Items",
-    img: "https://images.unsplash.com/photo-1606760227091-3dd870d97f1d",
+    img: PICSUM.jewelry,
   },
   {
     title: "Ceramics",
     icon: <Paintbrush className="w-6 h-6 text-primary" />,
     items: "4 Items",
-    img: "https://images.unsplash.com/photo-1582582494700-9c6c3f4fcd0d",
+    img: PICSUM.ceramics,
   },
   {
     title: "Coins",
     icon: <CircleDollarSign className="w-6 h-6 text-primary" />,
     items: "2 Items",
-    img: "https://images.unsplash.com/photo-1610374781660-6c6c44d0f27f",
+    img: PICSUM.coins,
   },
   {
     title: "Furniture",
     icon: <Sofa className="w-6 h-6 text-primary" />,
     items: "8 Items",
-    img: "https://images.unsplash.com/photo-1549187774-b4e9b0445b41",
+    img: PICSUM.furniture,
   },
   {
     title: "Instruments",
     icon: <Music className="w-6 h-6 text-primary" />,
     items: "8 Items",
-    img: "https://images.unsplash.com/photo-1519682577862-22b62b24e493",
+    img: PICSUM.instruments,
   },
   {
     title: "Jewelry",
     icon: <Gem className="w-6 h-6 text-primary" />,
     items: "3 Items",
-    img: "https://images.unsplash.com/photo-1606760227091-3dd870d97f1d",
+    img: PICSUM.jewelry,
   },
 ];
 
@@ -98,14 +100,14 @@ export default function AuctionByCategory() {
           <div className="flex items-center gap-3">
             <button
               onClick={() => scroll("left")}
-              className="w-11 h-11 rounded-full border border-border flex items-center justify-center bg-card hover:bg-primary hover:text-white hover:border-primary transition-all duration-300 shadow-sm hover:scale-105 active:scale-95 cursor-pointer"
+              className="w-11 h-11 rounded-full border border-border flex items-center justify-center bg-card hover:bg-primary hover:text-primary-foreground hover:border-primary transition-all duration-300 shadow-sm hover:scale-105 active:scale-95 cursor-pointer"
               aria-label="Previous categories"
             >
               <ChevronLeft size={18} />
             </button>
             <button
               onClick={() => scroll("right")}
-              className="w-11 h-11 rounded-full border border-border flex items-center justify-center bg-card hover:bg-primary hover:text-white hover:border-primary transition-all duration-300 shadow-sm hover:scale-105 active:scale-95 cursor-pointer"
+              className="w-11 h-11 rounded-full border border-border flex items-center justify-center bg-card hover:bg-primary hover:text-primary-foreground hover:border-primary transition-all duration-300 shadow-sm hover:scale-105 active:scale-95 cursor-pointer"
               aria-label="Next categories"
             >
               <ChevronRight size={18} />

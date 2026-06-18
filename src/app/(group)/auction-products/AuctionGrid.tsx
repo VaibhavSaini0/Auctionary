@@ -42,7 +42,7 @@ export default function AuctionGridContent() {
         <span className="inline-block text-[10px] tracking-widest px-3 py-1.5 rounded-full bg-primary/10 text-primary font-black mb-3">
           ✦ LIVE EVENTS
         </span>
-        <h1 className="text-3xl sm:text-4xl font-black text-gray-900 tracking-tight">
+        <h1 className="text-3xl sm:text-4xl font-black text-foreground tracking-tight">
           Browse <span className="text-orange-500 font-light font-serif italic">Auctions</span>
         </h1>
         <p className="text-xs sm:text-sm text-muted-foreground mt-2 max-w-lg leading-relaxed">
@@ -60,8 +60,8 @@ export default function AuctionGridContent() {
               }`}
               className={`px-4 py-2 rounded-full text-[10px] font-black uppercase tracking-wider border transition-all duration-300 ${
                 currentStatus === f.value
-                  ? "bg-primary text-white border-primary shadow-md shadow-primary/15"
-                  : "bg-card text-gray-600 border-border hover:border-primary/30 hover:bg-primary/5 hover:text-primary"
+                  ? "bg-primary text-primary-foreground border-primary shadow-md shadow-primary/15"
+                  : "bg-card text-muted-foreground border-border hover:border-primary/30 hover:bg-primary/10 hover:text-primary"
               }`}
             >
               {f.label}

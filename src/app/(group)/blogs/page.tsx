@@ -7,7 +7,7 @@ import { motion } from "framer-motion";
 import { useState, useEffect } from "react";
 import { supabase } from "@/lib/supabase/client";
 import { toast } from "sonner";
-import { SignInButton, useUser } from "@clerk/nextjs";
+import { useUser } from "@clerk/nextjs";
 
 const POSTS_PER_PAGE = 4;
 const FALLBACK_IMAGE = "https://images.unsplash.com/photo-1516979187457-637abb4f9353";
@@ -80,7 +80,7 @@ export default function BlogPage() {
   return (
     <section className="relative min-h-screen bg-background pt-8 sm:pt-10 pb-16 sm:pb-24 overflow-hidden">
       {/* Premium background mesh lights */}
-      <div className="absolute inset-0 bg-gradient-to-br from-[#f8faf4] via-[#f7f9f2] to-[#eef3ea] -z-20" />
+      <div className="absolute inset-0 bg-gradient-to-br from-muted/30 via-background to-muted/40 dark:from-background dark:via-card/30 dark:to-background -z-20" />
       <div className="absolute top-1/4 left-1/4 w-[400px] h-[400px] rounded-full bg-primary/5 blur-[120px] -z-10 pointer-events-none" />
       <div className="absolute bottom-1/4 right-1/4 w-[500px] h-[500px] rounded-full bg-orange-500/5 blur-[150px] -z-10 pointer-events-none" />
 
@@ -242,8 +242,8 @@ export default function BlogPage() {
                     }}
                     className={`w-10 h-10 rounded-xl font-bold transition-all duration-300 border ${
                       currentPage === i + 1
-                        ? "bg-primary text-white border-primary shadow-md shadow-primary/20 scale-105"
-                        : "bg-card text-muted-foreground border-border hover:border-primary hover:text-primary cursor-pointer"
+                        ? "bg-primary text-primary-foreground border-primary shadow-md shadow-primary/20 scale-105"
+                        : "bg-card text-muted-foreground border-border hover:border-primary hover:bg-primary/10 hover:text-primary cursor-pointer"
                     }`}
                   >
                     {i + 1}
@@ -263,7 +263,7 @@ export default function BlogPage() {
                 <Link
                   href="/blogs/create"
                   prefetch={false}
-                  className="w-full flex items-center justify-center gap-2 bg-foreground text-background py-3.5 rounded-2xl text-sm font-bold hover:bg-primary hover:text-white transition-all shadow-md active:scale-98"
+                  className="w-full flex items-center justify-center gap-2 bg-foreground text-background py-3.5 rounded-2xl text-sm font-bold hover:bg-primary hover:text-primary-foreground transition-all shadow-md active:scale-98"
                 >
                   <TagIcon size={16} /> Create New Post
                 </Link>
@@ -271,7 +271,7 @@ export default function BlogPage() {
                 <Link
                   href="/blogs/manage"
                   prefetch={false}
-                  className="w-full flex items-center justify-center gap-2 bg-muted/60 text-foreground py-3.5 rounded-2xl text-sm font-bold hover:bg-primary hover:text-white transition-all shadow-sm active:scale-98"
+                  className="w-full flex items-center justify-center gap-2 bg-muted text-foreground py-3.5 rounded-2xl text-sm font-bold hover:bg-primary hover:text-primary-foreground transition-all shadow-sm active:scale-98"
                 >
                   <PenSquareIcon size={16} /> Manage Writing Dashboard
                 </Link>
@@ -282,11 +282,12 @@ export default function BlogPage() {
                 <p className="text-xs text-muted-foreground leading-relaxed">
                   Sign in to create your own blog posts and manage your writing dashboard.
                 </p>
-                <SignInButton mode="modal">
-                  <button className="w-full flex items-center justify-center gap-2 bg-primary text-white py-3.5 rounded-2xl text-sm font-bold hover:bg-primary/95 transition-all shadow-md active:scale-98 cursor-pointer">
-                    Sign In to Write
-                  </button>
-                </SignInButton>
+                <Link
+                  href="/sign-in"
+                  className="w-full flex items-center justify-center gap-2 bg-primary text-primary-foreground py-3.5 rounded-2xl text-sm font-bold hover:bg-primary/95 transition-all shadow-md active:scale-98 cursor-pointer"
+                >
+                  Sign In to Write
+                </Link>
               </div>
             )}
 
